@@ -1,1 +1,1 @@
-This is the README.md file. This is where the project description, theory, and setup will live.
+This is the README.md file. This is where the project description, theory, and setup overview will live.
