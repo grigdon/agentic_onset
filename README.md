@@ -117,5 +117,9 @@ git clone git@github.com:grigdon/agentic_onset.git
 # Navigate to the repository
 cd agentic_onset
 ```
-
 Congratulations! You just cloned the repository from the command line interface! The repository is now located at `~/agentic_onset/`, assuming everything went well.
+
+### Some helpful links
+
+- https://www.unixtutorial.org/basic-unix-commands/
+- https://education.github.com/git-cheat-sheet-education.pdf
