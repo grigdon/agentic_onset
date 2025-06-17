@@ -23,14 +23,18 @@ from openai import OpenAI
 # config
 
 THEORETICAL_MODELS = {
-    "historical_grievances": ["lost_autonomy", "downgr2_aut", "lsepkin_adjregbase1"],
-    "recent_grievances": ["status_excl", "downgr2_incl"],
-    "political_opportunity": ["regaut", "lv2x_polyarchy", "lfederal", "numb_rel_grps"],
-    "resource_mobilization": ["lgiantoilfield", "mounterr", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize"],
-    "all_interactions": [] # This will be populated dynamically
+    "grievances": ["lost_autonomy", "downgr2_aut", "status_excl"],
+    "political_opportunity": ["regaut", "lv2x_polyarchy", "lfederal"],
+    "resource_mobilization": ["lgiantoilfield", "mounterr", "lsepkin_adjregbase1"],
+    "pom_gm": [], # This will be populated dynamically
+    "pom_rmm": [], # This will be populated dynamically
+    "gm_rmm": [], # This will be populated dynamically
+    "complete": [], # Will contain all theoretical features
+    "base": [] # Will contain only control variables
 }
 
-CORE_FEATURES = ["coldwar"]
+ONSET_CONTROLS = ["coldwar", "groupsize", "lnlrgdpcap", "lnltotpop", "numb_rel_grps", "noncontiguous", "t_claim"]
+ESCALATION_CONTROLS = ["coldwar", "groupsize", "lnlrgdpcap", "lnltotpop", "numb_rel_grps", "noncontiguous", "t_escal"]
 STAGE1_TARGET = "nviol_sdm_onset"
 STAGE2_TARGET = "firstescal"
 
@@ -85,8 +89,8 @@ Format concisely using:
 def load_and_preprocess_data():
     print("\n=== Loading raw data ===")
     try:
-        # Note: Update this path to your local file location
-        df = pd.read_stata("~/projects/structured_decisions/onset_escalation_data.dta")
+        # Update path to use current directory
+        df = pd.read_stata("onset_escalation_data.dta")
     except FileNotFoundError:
         print("Error: The data file 'onset_escalation_data.dta' was not found in the specified path.")
         print("Please update the path in the 'load_and_preprocess_data' function.")
@@ -96,6 +100,8 @@ def load_and_preprocess_data():
     print("\n=== Applying filters ===")
     filtered = df[(df['isrelevant'] == 1) & (df['exclacc'].fillna(1) == 0) & (df['geo_concentrated'].fillna(0) == 1)].copy()
     print(f"Filtered data shape: {filtered.shape}")
+    print("Filtered DataFrame columns:")
+    print(filtered.columns.tolist())
     return filtered
 
 def group_aware_split(df, test_size=0.3, random_state=42):
@@ -108,10 +114,22 @@ def prepare_stage_data(df, stage):
     target = STAGE1_TARGET if stage == "onset" else STAGE2_TARGET
     all_base_features = list(set(ALL_NUMERIC_FEATURES + ALL_CATEGORICAL_FEATURES))
     features_to_keep = all_base_features + ['gwgroupid', target]
-    
+
+    # Add the relevant time control for the stage
+    time_control = 't_claim' if stage == 'onset' else 't_escal'
+    if time_control not in features_to_keep:
+        features_to_keep.append(time_control)
+
     df_stage = df[[f for f in features_to_keep if f in df.columns]].copy()
+
+    # Impute missing values for the stage-specific time control
+    if time_control in df_stage.columns:
+        df_stage[time_control] = df_stage[time_control].fillna(-1)
+
     print(f"Shape before NA drop: {df_stage.shape}")
-    df_stage = df_stage.dropna()
+    # Only drop rows with NA in the features to be used (excluding the time control, which is now imputed)
+    drop_cols = [col for col in df_stage.columns if col != time_control]
+    df_stage = df_stage.dropna(subset=drop_cols)
     print(f"Shape after NA drop: {df_stage.shape}")
     return df_stage
 
@@ -329,12 +347,26 @@ def main():
     df_base = load_and_preprocess_data()
     
     # Correctly define all_interactions feature set
-    THEORETICAL_MODELS["all_interactions"] = list(set(
-        THEORETICAL_MODELS["historical_grievances"] +
-        THEORETICAL_MODELS["recent_grievances"] +
-        THEORETICAL_MODELS["political_opportunity"] +
+    THEORETICAL_MODELS["pom_gm"] = list(set(
+        THEORETICAL_MODELS["grievances"] +
+        THEORETICAL_MODELS["political_opportunity"]
+    ))
+
+    THEORETICAL_MODELS["pom_rmm"] = list(set(
+        THEORETICAL_MODELS["grievances"] +
         THEORETICAL_MODELS["resource_mobilization"]
     ))
+
+    THEORETICAL_MODELS["gm_rmm"] = list(set(
+        THEORETICAL_MODELS["resource_mobilization"] +
+        THEORETICAL_MODELS["grievances"]
+    ))
+
+    # Populate complete model with all theoretical features
+    all_theoretical_features = set()
+    for theory in ["grievances", "political_opportunity", "resource_mobilization"]:
+        all_theoretical_features.update(THEORETICAL_MODELS[theory])
+    THEORETICAL_MODELS["complete"] = list(all_theoretical_features)
     
     for stage in ["onset", "escalation"]:
         print(f"\n{'='*60}\nPROCESSING {stage.upper()} STAGE\n{'='*60}")
@@ -353,10 +385,28 @@ def main():
         
         print(f"Data splits prepared: Train={len(train_df)}, Val={len(val_df)}, Test={len(test_df)}")
         
+        # Set controls based on stage
+        controls = ONSET_CONTROLS if stage == "onset" else ESCALATION_CONTROLS
+        THEORETICAL_MODELS["base"] = controls  # Update base model with appropriate controls
+        
         for theory in THEORETICAL_MODELS:
             print(f"\n>> Evaluating {theory} model for {stage}")
             
-            features = list(set(THEORETICAL_MODELS[theory] + CORE_FEATURES))
+            # For complete model, combine all theoretical features with stage-specific controls
+            if theory == "complete":
+                # Get all theoretical features
+                theoretical_features = THEORETICAL_MODELS["complete"]
+                # Get stage-specific controls (excluding the time variable)
+                stage_controls = [c for c in controls if c != "t_claim" and c != "t_escal"]
+                # Add the appropriate time variable based on stage
+                time_var = "t_claim" if stage == "onset" else "t_escal"
+                features = list(set(theoretical_features + stage_controls + [time_var]))
+            # For base model, use only controls
+            elif theory == "base":
+                features = controls
+            # For other models, combine their features with controls
+            else:
+                features = list(set(THEORETICAL_MODELS[theory] + controls))
             
             # Dynamically determine feature types for the current theory
             numeric_cols = [f for f in features if f in ALL_NUMERIC_FEATURES]
@@ -380,7 +430,7 @@ def main():
                 ('classifier', RandomForestClassifier(**llm_params, random_state=42, n_jobs=-1))
             ])
             
-            llm_model.fit(X_train_th, y_train) # Fit the pipeline with original X_train_th
+            llm_model.fit(X_train_th, y_train)
             
             llm_results = evaluate_model(llm_model, X_test_th, y_test, theory, stage)
             llm_results['history'] = history
