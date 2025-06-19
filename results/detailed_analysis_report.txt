@@ -1,116 +1,116 @@
 ================================================================================
-COMPREHENSIVE ANALYSIS: LLM vs HUMAN-TUNED RANDOM FORESTS
+COMPREHENSIVE ANALYSIS: AI vs HUMAN-TUNED RANDOM FORESTS
 ================================================================================
 
-Note: 'Human-tuned' in this report refers to models replicating R's caret::train defaults
-      (10-fold CV with downsampling and mtry tuning) on the training set, evaluated on the test set.
-      'AI-tuned' refers to models with hyperparameters optimized by an LLM on a validation set,
-      and then the final model is trained on the full training set with optimized parameters,
-      and evaluated on the same test set.
+Just a note:
+  'Human-tuned' means models set up like R's caret::train defaults
+  (10-fold CV with downsampling and mtry tuning) evaluated on the test set.
+  'AI-tuned' models had their settings optimized by an LLM on a validation set,
+  then trained on the full training set, and also evaluated on the test set.
 
 
-============================== ONSET STAGE ANALYSIS ==============================
+============================== ONSET STAGE BREAKDOWN ==============================
 
 --- BASE Theory ---
   Features used: ['t_claim', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7939
-  AI-tuned AUC (Test Set):    0.7501
-  Improvement (AI - Human):   -0.0438 ✗
-  Best AI Params (used for final AI model): {'n_estimators': 2000, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7540
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7540, Params: {'n_estimators': 2000, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7509, Params: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7495, Params: {'n_estimators': 1800, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7941
+  AI-tuned AUC (Test):    0.7511
+  Improvement (AI - Human):   -0.0430 (Human Win/Draw)
+  Best AI Params used: {'n_estimators': 1500, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7503
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7503, Params: {'n_estimators': 1500, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7373, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7373, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 0.35, 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9952746603662138,
-    "recall": 0.7388730541547907,
-    "f1-score": 0.8481187869636341,
+    "precision": 0.9952802359882006,
+    "recall": 0.7397500548125411,
+    "f1-score": 0.848698276946296,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.02055921052631579,
+    "precision": 0.020627062706270627,
     "recall": 0.6097560975609756,
-    "f1-score": 0.03977724741447892,
+    "f1-score": 0.03990422984836393,
     "support": 41.0
   },
-  "accuracy": 0.737722729248153,
+  "accuracy": 0.7385919165580183,
   "macro avg": {
-    "precision": 0.5079169354462648,
-    "recall": 0.6743145758578831,
-    "f1-score": 0.4439480171890565,
+    "precision": 0.5079536493472356,
+    "recall": 0.6747530761867584,
+    "f1-score": 0.44430125339732995,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9865907547939766,
-    "recall": 0.737722729248153,
-    "f1-score": 0.84091713482945,
+    "precision": 0.9865968852484007,
+    "recall": 0.7385919165580183,
+    "f1-score": 0.8414925933454669,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3370, 1191], [16, 25]]
+[[3374, 1187], [16, 25]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925861317051897,
-    "recall": 0.9980267485200613,
-    "f1-score": 0.9952990051382967,
+    "precision": 0.9925877479834314,
+    "recall": 0.998245998684499,
+    "f1-score": 0.9954088325317009,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4375,
+    "precision": 0.4666666666666667,
     "recall": 0.17073170731707318,
-    "f1-score": 0.24561403508771928,
+    "f1-score": 0.25,
     "support": 41.0
   },
-  "accuracy": 0.9906562364189483,
+  "accuracy": 0.9908735332464146,
   "macro avg": {
-    "precision": 0.7150430658525948,
-    "recall": 0.5843792279185672,
-    "f1-score": 0.620456520113008,
+    "precision": 0.729627207325049,
+    "recall": 0.5844888530007861,
+    "f1-score": 0.6227044162658504,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9876407750341961,
-    "recall": 0.9906562364189483,
-    "f1-score": 0.9886199343490586,
+    "precision": 0.9879022277022521,
+    "recall": 0.9908735332464146,
+    "f1-score": 0.988767858578246,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4552, 9], [34, 7]]
+[[4553, 8], [34, 7]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.2490
-    - lnlrgdpcap: 0.2334
-    - t_claim: 0.1926
-    - groupsize: 0.1668
-    - numb_rel_grps: 0.1249
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.2501
+    - lnlrgdpcap: 0.2332
+    - t_claim: 0.1924
+    - groupsize: 0.1665
+    - numb_rel_grps: 0.1248
 
 --------------------------------------------------
 
 --- COMPLETE Theory ---
   Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7955
-  AI-tuned AUC (Test Set):    0.8027
-  Improvement (AI - Human):   +0.0072 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7729
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7729, Params: {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7681, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7634, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7954
+  AI-tuned AUC (Test):    0.8256
+  Improvement (AI - Human):   +0.0302 (AI Win!)
+  Best AI Params used: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7681
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7681, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7646, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 3, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7646, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 5, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9964114832535885,
@@ -141,92 +141,92 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   Human Model Confusion Matrix (Test Set):
 [[3332, 1229], [12, 29]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9917337393952578,
-    "recall": 0.9995614996711247,
-    "f1-score": 0.9956322341122515,
+    "precision": 0.9923797082516873,
+    "recall": 0.9993422495066872,
+    "f1-score": 0.9958488092637099,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6,
-    "recall": 0.07317073170731707,
-    "f1-score": 0.13043478260869565,
+    "precision": 0.6666666666666666,
+    "recall": 0.14634146341463414,
+    "f1-score": 0.24,
     "support": 41.0
   },
-  "accuracy": 0.9913081269013473,
+  "accuracy": 0.9917427205562799,
   "macro avg": {
-    "precision": 0.7958668696976289,
-    "recall": 0.5363661156892209,
-    "f1-score": 0.5630335083604736,
+    "precision": 0.829523187459177,
+    "recall": 0.5728418564606607,
+    "f1-score": 0.6179244046318549,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9882437169451914,
-    "recall": 0.9913081269013473,
-    "f1-score": 0.9879240429971614,
+    "precision": 0.9894778754170532,
+    "recall": 0.9917427205562799,
+    "f1-score": 0.9891148237835248,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4559, 2], [38, 3]]
+[[4558, 3], [35, 6]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.1699
-    - lnlrgdpcap: 0.1512
-    - lv2x_polyarchy: 0.1453
-    - t_claim: 0.1216
-    - groupsize: 0.0955
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.1700
+    - lnlrgdpcap: 0.1545
+    - lv2x_polyarchy: 0.1462
+    - t_claim: 0.1241
+    - groupsize: 0.0935
 
 --------------------------------------------------
 
 --- RESOURCE MOBILIZATION Theory ---
   Features used: ['t_claim', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7818
-  AI-tuned AUC (Test Set):    0.7905
-  Improvement (AI - Human):   +0.0087 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7625
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7625, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7625, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7564, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Human-tuned AUC (Test): 0.7815
+  AI-tuned AUC (Test):    0.8024
+  Improvement (AI - Human):   +0.0209 (AI Win!)
+  Best AI Params used: {'n_estimators': 1300, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7641
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7641, Params: {'n_estimators': 1300, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7556, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7480, Params: {'n_estimators': 1200, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 4, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9960171568627451,
-    "recall": 0.7127822845867134,
-    "f1-score": 0.830926517571885,
+    "precision": 0.9960183767228178,
+    "recall": 0.713001534751151,
+    "f1-score": 0.8310759008433426,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.02092675635276532,
+    "precision": 0.020942408376963352,
     "recall": 0.6829268292682927,
-    "f1-score": 0.04060913705583756,
+    "f1-score": 0.04063860667634253,
     "support": 41.0
   },
-  "accuracy": 0.71251629726206,
+  "accuracy": 0.7127335940895263,
   "macro avg": {
-    "precision": 0.5084719566077552,
-    "recall": 0.6978545569275031,
-    "f1-score": 0.43576782731386127,
+    "precision": 0.5084803925498905,
+    "recall": 0.6979641820097219,
+    "f1-score": 0.4358572537598426,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9873299107912742,
-    "recall": 0.71251629726206,
-    "f1-score": 0.8238854457333021,
+    "precision": 0.9873312592299495,
+    "recall": 0.7127335940895263,
+    "f1-score": 0.824033760673667,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3251, 1310], [13, 28]]
+[[3252, 1309], [13, 28]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9923780487804879,
@@ -257,30 +257,30 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[4557, 4], [35, 6]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.2185
-    - lnlrgdpcap: 0.2066
-    - t_claim: 0.1703
-    - groupsize: 0.1283
-    - mounterr: 0.1113
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.2213
+    - lnlrgdpcap: 0.2039
+    - t_claim: 0.1690
+    - groupsize: 0.1291
+    - mounterr: 0.1104
 
 --------------------------------------------------
 
 --- POLITICAL OPPORTUNITY Theory ---
   Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7835
-  AI-tuned AUC (Test Set):    0.7972
-  Improvement (AI - Human):   +0.0137 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7367
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7367, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7245, Params: {'n_estimators': 2000, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7180, Params: {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Human-tuned AUC (Test): 0.7836
+  AI-tuned AUC (Test):    0.7958
+  Improvement (AI - Human):   +0.0122 (AI Win!)
+  Best AI Params used: {'n_estimators': 1250, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7370
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7370, Params: {'n_estimators': 1250, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+      2. Val AUC: 0.7365, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+      3. Val AUC: 0.7263, Params: {'n_estimators': 1100, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.995931415286254,
@@ -291,7 +291,7 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "1.0": {
     "precision": 0.023255813953488372,
     "recall": 0.6585365853658537,
-    "f1-score": 0.04492512479201331,
+    "f1-score": 0.044925124792013306,
     "support": 41.0
   },
   "accuracy": 0.7505432420686659,
@@ -311,403 +311,403 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   Human Model Confusion Matrix (Test Set):
 [[3427, 1134], [14, 27]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9932284840541721,
-    "recall": 0.9969304976978732,
-    "f1-score": 0.9950760477076267,
+    "precision": 0.9932299628739899,
+    "recall": 0.9971497478623109,
+    "f1-score": 0.9951859956236323,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4166666666666667,
+    "precision": 0.43478260869565216,
     "recall": 0.24390243902439024,
-    "f1-score": 0.3076923076923077,
+    "f1-score": 0.3125,
     "support": 41.0
   },
-  "accuracy": 0.9902216427640157,
+  "accuracy": 0.990438939591482,
   "macro avg": {
-    "precision": 0.7049475753604194,
-    "recall": 0.6204164683611317,
-    "f1-score": 0.6513841776999671,
+    "precision": 0.7140062857848211,
+    "recall": 0.6205260934433505,
+    "f1-score": 0.6538429978118161,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9880917968501548,
-    "recall": 0.9902216427640157,
-    "f1-score": 0.988952029163379,
+    "precision": 0.9882546605008236,
+    "recall": 0.990438939591482,
+    "f1-score": 0.9891038300824395,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4547, 14], [31, 10]]
+[[4548, 13], [31, 10]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.2039
-    - lnlrgdpcap: 0.1799
-    - lv2x_polyarchy: 0.1746
-    - t_claim: 0.1571
-    - groupsize: 0.1337
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.2032
+    - lnlrgdpcap: 0.1800
+    - lv2x_polyarchy: 0.1753
+    - t_claim: 0.1569
+    - groupsize: 0.1339
 
 --------------------------------------------------
 
 --- GRIEVANCES Theory ---
   Features used: ['t_claim', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.8051
-  AI-tuned AUC (Test Set):    0.7915
-  Improvement (AI - Human):   -0.0136 ✗
-  Best AI Params (used for final AI model): {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7601
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7601, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7601, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7590, Params: {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.8052
+  AI-tuned AUC (Test):    0.8270
+  Improvement (AI - Human):   +0.0218 (AI Win!)
+  Best AI Params used: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7666
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7666, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+      2. Val AUC: 0.7558, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced'}
+      3. Val AUC: 0.7546, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9962143273150844,
-    "recall": 0.7500548125411094,
-    "f1-score": 0.8557848655409631,
+    "precision": 0.9962154294032023,
+    "recall": 0.7502740627055471,
+    "f1-score": 0.855927963981991,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.023972602739726026,
+    "precision": 0.023993144815766924,
     "recall": 0.6829268292682927,
-    "f1-score": 0.04631927212572374,
+    "f1-score": 0.046357615894039736,
     "support": 41.0
   },
-  "accuracy": 0.7494567579313341,
+  "accuracy": 0.7496740547588006,
   "macro avg": {
-    "precision": 0.5100934650274053,
-    "recall": 0.7164908209047011,
-    "f1-score": 0.4510520688333434,
+    "precision": 0.5101042871094846,
+    "recall": 0.71660044598692,
+    "f1-score": 0.4511427899380154,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9875524605815795,
-    "recall": 0.7494567579313341,
-    "f1-score": 0.8485731990198799,
+    "precision": 0.9875537358638533,
+    "recall": 0.7496740547588007,
+    "f1-score": 0.8487153641837282,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3421, 1140], [13, 28]]
+[[3422, 1139], [13, 28]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9923697405711794,
-    "recall": 0.9980267485200613,
-    "f1-score": 0.995190205509401,
+    "precision": 0.9925828970331588,
+    "recall": 0.9975882481911862,
+    "f1-score": 0.9950792782941498,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4,
-    "recall": 0.14634146341463414,
-    "f1-score": 0.21428571428571427,
+    "precision": 0.3888888888888889,
+    "recall": 0.17073170731707318,
+    "f1-score": 0.23728813559322035,
     "support": 41.0
   },
-  "accuracy": 0.990438939591482,
+  "accuracy": 0.9902216427640157,
   "macro avg": {
-    "precision": 0.6961848702855897,
-    "recall": 0.5721841059673477,
-    "f1-score": 0.6047379598975576,
+    "precision": 0.6907358929610239,
+    "recall": 0.5841599777541296,
+    "f1-score": 0.6161837069436851,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9870922178933396,
-    "recall": 0.990438939591482,
-    "f1-score": 0.9882329947010197,
+    "precision": 0.9872044845312217,
+    "recall": 0.9902216427640157,
+    "f1-score": 0.9883279882353192,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4552, 9], [35, 6]]
+[[4550, 11], [34, 7]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.2347
-    - lnlrgdpcap: 0.2199
-    - t_claim: 0.1721
-    - groupsize: 0.1370
-    - numb_rel_grps: 0.1164
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.2376
+    - lnlrgdpcap: 0.2203
+    - t_claim: 0.1730
+    - groupsize: 0.1344
+    - numb_rel_grps: 0.1155
 
 --------------------------------------------------
 
 --- POM GM Theory ---
   Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7986
-  AI-tuned AUC (Test Set):    0.8265
-  Improvement (AI - Human):   +0.0279 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7634
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7634, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7532, Params: {'n_estimators': 1800, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7509, Params: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7986
+  AI-tuned AUC (Test):    0.8230
+  Improvement (AI - Human):   +0.0243 (AI Win!)
+  Best AI Params used: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7615
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7615, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+      2. Val AUC: 0.7508, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7489, Params: {'n_estimators': 1100, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9960204661739624,
-    "recall": 0.7682525761894321,
-    "f1-score": 0.8674340883772744,
+    "precision": 0.9960193346602217,
+    "recall": 0.7680333260249945,
+    "f1-score": 0.8672938846249071,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.024907749077490774,
+    "precision": 0.02488479262672811,
     "recall": 0.6585365853658537,
-    "f1-score": 0.048,
+    "f1-score": 0.047957371225577264,
     "support": 41.0
   },
-  "accuracy": 0.7672750977835724,
+  "accuracy": 0.7670578009561061,
   "macro avg": {
-    "precision": 0.5104641076257266,
-    "recall": 0.713394580777643,
-    "f1-score": 0.45771704418863723,
+    "precision": 0.510452063643475,
+    "recall": 0.7132849556954242,
+    "f1-score": 0.4576256279252422,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9873686579599349,
-    "recall": 0.7672750977835724,
-    "f1-score": 0.8601336108406669,
+    "precision": 0.9873673320041214,
+    "recall": 0.7670578009561061,
+    "f1-score": 0.8599942764003585,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3504, 1057], [14, 27]]
+[[3503, 1058], [14, 27]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925845147219193,
-    "recall": 0.9978074983556238,
-    "f1-score": 0.9951891537284059,
+    "precision": 0.9925812786384465,
+    "recall": 0.9973689980267485,
+    "f1-score": 0.9949693788276466,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4117647058823529,
+    "precision": 0.3684210526315789,
     "recall": 0.17073170731707318,
-    "f1-score": 0.2413793103448276,
+    "f1-score": 0.23333333333333336,
     "support": 41.0
   },
-  "accuracy": 0.990438939591482,
+  "accuracy": 0.9900043459365493,
   "macro avg": {
-    "precision": 0.7021746103021361,
-    "recall": 0.5842696028363484,
-    "f1-score": 0.6182842320366168,
+    "precision": 0.6805011656350127,
+    "recall": 0.5840503526719109,
+    "f1-score": 0.61415135608049,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9874098923485117,
-    "recall": 0.990438939591482,
-    "f1-score": 0.9884733337417203,
+    "precision": 0.9870205291238265,
+    "recall": 0.9900043459365493,
+    "f1-score": 0.9881838338764802,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4551, 10], [34, 7]]
+[[4549, 12], [34, 7]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.1897
-    - lnlrgdpcap: 0.1669
-    - lv2x_polyarchy: 0.1632
-    - t_claim: 0.1371
-    - groupsize: 0.1129
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.1910
+    - lnlrgdpcap: 0.1655
+    - lv2x_polyarchy: 0.1624
+    - t_claim: 0.1373
+    - groupsize: 0.1123
 
 --------------------------------------------------
 
 --- POM RMM Theory ---
   Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'coldwar', 'regaut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7806
-  AI-tuned AUC (Test Set):    0.8153
-  Improvement (AI - Human):   +0.0348 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7423
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7423, Params: {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7389, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7357, Params: {'n_estimators': 1100, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7806
+  AI-tuned AUC (Test):    0.7729
+  Improvement (AI - Human):   -0.0077 (Human Win/Draw)
+  Best AI Params used: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7404
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7404, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7404, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7404, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9960232486999082,
-    "recall": 0.7138785354089016,
-    "f1-score": 0.8316730523627075,
+    "precision": 0.9960341671751067,
+    "recall": 0.7158517868888402,
+    "f1-score": 0.8330144151039672,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.021005251312828207,
+    "precision": 0.021148036253776436,
     "recall": 0.6829268292682927,
-    "f1-score": 0.040756914119359534,
+    "f1-score": 0.041025641025641026,
     "support": 41.0
   },
-  "accuracy": 0.7136027813993916,
+  "accuracy": 0.7155584528465885,
   "macro avg": {
-    "precision": 0.5085142500063682,
-    "recall": 0.6984026823385971,
-    "f1-score": 0.4362149832410335,
+    "precision": 0.5085911017144416,
+    "recall": 0.6993893080785665,
+    "f1-score": 0.4370200280648041,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9873366476801623,
-    "recall": 0.7136027813993916,
-    "f1-score": 0.8246266460897875,
+    "precision": 0.9873487409761119,
+    "recall": 0.7155584528465885,
+    "f1-score": 0.8259584525361247,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3256, 1305], [13, 28]]
+[[3265, 1296], [13, 28]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9919495213228895,
+    "precision": 0.9917337393952578,
     "recall": 0.9995614996711247,
-    "f1-score": 0.9957409631975538,
+    "f1-score": 0.9956322341122515,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6666666666666666,
-    "recall": 0.0975609756097561,
-    "f1-score": 0.1702127659574468,
+    "precision": 0.6,
+    "recall": 0.07317073170731707,
+    "f1-score": 0.13043478260869565,
     "support": 41.0
   },
-  "accuracy": 0.9915254237288136,
+  "accuracy": 0.9913081269013473,
   "macro avg": {
-    "precision": 0.8293080939947781,
-    "recall": 0.5485612376404404,
-    "f1-score": 0.5829768645775003,
+    "precision": 0.7958668696976289,
+    "recall": 0.5363661156892209,
+    "f1-score": 0.5630335083604736,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9890515210967041,
-    "recall": 0.9915254237288136,
-    "f1-score": 0.9883861922095389,
+    "precision": 0.9882437169451914,
+    "recall": 0.9913081269013473,
+    "f1-score": 0.9879240429971614,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4559, 2], [37, 4]]
+[[4559, 2], [38, 3]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.1705
-    - lnlrgdpcap: 0.1552
-    - lv2x_polyarchy: 0.1547
-    - t_claim: 0.1341
-    - groupsize: 0.1149
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.1753
+    - lnlrgdpcap: 0.1529
+    - lv2x_polyarchy: 0.1521
+    - t_claim: 0.1349
+    - groupsize: 0.1151
 
 --------------------------------------------------
 
 --- RMM GM Theory ---
   Features used: ['t_claim', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7989
-  AI-tuned AUC (Test Set):    0.8420
-  Improvement (AI - Human):   +0.0430 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 0/10
-    Max AI Validation AUC during optimization: 0.7634
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7634, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7634, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7626, Params: {'n_estimators': 1400, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7988
+  AI-tuned AUC (Test):    0.8039
+  Improvement (AI - Human):   +0.0051 (AI Win!)
+  Best AI Params used: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7682
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7682, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7664, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7664, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.996032956972841,
-    "recall": 0.7156325367244025,
-    "f1-score": 0.8328655269201327,
+    "precision": 0.9960390006093846,
+    "recall": 0.7167287875465906,
+    "f1-score": 0.8336095881677931,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.021132075471698115,
+    "precision": 0.021212121212121213,
     "recall": 0.6829268292682927,
-    "f1-score": 0.040995607613469986,
+    "f1-score": 0.041146216017634095,
     "support": 41.0
   },
-  "accuracy": 0.7153411560191221,
+  "accuracy": 0.7164276401564538,
   "macro avg": {
-    "precision": 0.5085825162222696,
-    "recall": 0.6992796829963477,
-    "f1-score": 0.43693056726680135,
+    "precision": 0.5086255609107528,
+    "recall": 0.6998278084074416,
+    "f1-score": 0.4373779020927136,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.987347399358424,
-    "recall": 0.7153411560191221,
-    "f1-score": 0.8258106232496475,
+    "precision": 0.9873541022922859,
+    "recall": 0.7164276401564538,
+    "f1-score": 0.8265493973250819,
     "support": 4602.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[3264, 1297], [13, 28]]
+[[3269, 1292], [13, 28]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925925925925926,
-    "recall": 0.9989037491778119,
-    "f1-score": 0.9957381706917277,
+    "precision": 0.9917319408181027,
+    "recall": 0.9993422495066872,
+    "f1-score": 0.9955225510538386,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.5833333333333334,
-    "recall": 0.17073170731707318,
-    "f1-score": 0.2641509433962264,
+    "precision": 0.5,
+    "recall": 0.07317073170731707,
+    "f1-score": 0.1276595744680851,
     "support": 41.0
   },
-  "accuracy": 0.9915254237288136,
+  "accuracy": 0.9910908300738809,
   "macro avg": {
-    "precision": 0.787962962962963,
-    "recall": 0.5848177282474425,
-    "f1-score": 0.629944557043977,
+    "precision": 0.7458659704090513,
+    "recall": 0.5362564906070021,
+    "f1-score": 0.5615910627609618,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9889464323080142,
-    "recall": 0.9915254237288136,
-    "f1-score": 0.9892203357679736,
+    "precision": 0.9873510173992538,
+    "recall": 0.9910908300738809,
+    "f1-score": 0.9877906123228486,
     "support": 4602.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[4556, 5], [34, 7]]
+[[4558, 3], [38, 3]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnltotpop: 0.2024
-    - lnlrgdpcap: 0.1915
-    - t_claim: 0.1510
-    - groupsize: 0.1091
-    - mounterr: 0.1022
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.1992
+    - lnlrgdpcap: 0.1886
+    - t_claim: 0.1500
+    - groupsize: 0.1109
+    - mounterr: 0.1055
 
 --------------------------------------------------
 
-============================== ESCALATION STAGE ANALYSIS ==============================
+============================== ESCALATION STAGE BREAKDOWN ==============================
 
 --- BASE Theory ---
   Features used: ['t_escal', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.6344
-  AI-tuned AUC (Test Set):    0.6903
-  Improvement (AI - Human):   +0.0560 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1300, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 10/10
-    Max AI Validation AUC during optimization: 0.7739
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7739, Params: {'n_estimators': 1300, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7704, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      3. Val AUC: 0.7491, Params: {'n_estimators': 1600, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Human-tuned AUC (Test): 0.6347
+  AI-tuned AUC (Test):    0.7133
+  Improvement (AI - Human):   +0.0786 (AI Win!)
+  Best AI Params used: {'n_estimators': 1800, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 10/10
+    Highest AI Validation AUC during search: 0.7669
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7669, Params: {'n_estimators': 1800, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7649, Params: {'n_estimators': 1350, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7646, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9877112135176651,
@@ -718,7 +718,7 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "1.0": {
     "precision": 0.028077753779697623,
     "recall": 0.6190476190476191,
-    "f1-score": 0.05371900826446281,
+    "f1-score": 0.053719008264462804,
     "support": 21.0
   },
   "accuracy": 0.5888689407540395,
@@ -738,7 +738,7 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   Human Model Confusion Matrix (Test Set):
 [[643, 450], [8, 13]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9819819819819819,
@@ -769,35 +769,35 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1090, 3], [20, 1]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2840
-    - lnltotpop: 0.2226
-    - t_escal: 0.1873
-    - groupsize: 0.1463
-    - numb_rel_grps: 0.1098
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2802
+    - lnltotpop: 0.2204
+    - t_escal: 0.1883
+    - groupsize: 0.1488
+    - numb_rel_grps: 0.1120
 
 --------------------------------------------------
 
 --- COMPLETE Theory ---
   Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7354
-  AI-tuned AUC (Test Set):    0.7827
-  Improvement (AI - Human):   +0.0474 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 4/10
-    Max AI Validation AUC during optimization: 0.7696
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7696, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7623, Params: {'n_estimators': 1700, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7621, Params: {'n_estimators': 1600, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7359
+  AI-tuned AUC (Test):    0.7775
+  Improvement (AI - Human):   +0.0416 (AI Win!)
+  Best AI Params used: {'n_estimators': 1300, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 3/10
+    Highest AI Validation AUC during search: 0.7643
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7643, Params: {'n_estimators': 1300, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7517, Params: {'n_estimators': 1200, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+      3. Val AUC: 0.7447, Params: {'n_estimators': 1350, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9903314917127072,
     "recall": 0.6559926806953339,
-    "f1-score": 0.7892129884424877,
+    "f1-score": 0.7892129884424876,
     "support": 1093.0
   },
   "1.0": {
@@ -810,20 +810,20 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "macro avg": {
     "precision": 0.5131144638050715,
     "recall": 0.6613296736810003,
-    "f1-score": 0.42866975456187645,
+    "f1-score": 0.4286697545618764,
     "support": 1114.0
   },
   "weighted avg": {
     "precision": 0.9723394673212163,
     "recall": 0.6561938958707361,
-    "f1-score": 0.7756197965008489,
+    "f1-score": 0.7756197965008488,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
 [[717, 376], [7, 14]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981149012567325,
@@ -854,35 +854,35 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1093, 0], [21, 0]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2024
-    - lv2x_polyarchy: 0.1701
-    - lnltotpop: 0.1361
-    - t_escal: 0.1179
-    - mounterr: 0.0936
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2022
+    - lv2x_polyarchy: 0.1708
+    - lnltotpop: 0.1368
+    - t_escal: 0.1177
+    - mounterr: 0.0928
 
 --------------------------------------------------
 
 --- RESOURCE MOBILIZATION Theory ---
   Features used: ['t_escal', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7187
-  AI-tuned AUC (Test Set):    0.7317
-  Improvement (AI - Human):   +0.0130 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 2/10
-    Max AI Validation AUC during optimization: 0.7225
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7225, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7218, Params: {'n_estimators': 1600, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7179, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Human-tuned AUC (Test): 0.7185
+  AI-tuned AUC (Test):    0.7268
+  Improvement (AI - Human):   +0.0083 (AI Win!)
+  Best AI Params used: {'n_estimators': 1100, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 1/10
+    Highest AI Validation AUC during search: 0.7250
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7250, Params: {'n_estimators': 1100, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7166, Params: {'n_estimators': 1200, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7042, Params: {'n_estimators': 1100, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9919463087248322,
     "recall": 0.67612076852699,
-    "f1-score": 0.8041349292709467,
+    "f1-score": 0.8041349292709468,
     "support": 1093.0
   },
   "1.0": {
@@ -901,14 +901,14 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "weighted avg": {
     "precision": 0.9740134416273133,
     "recall": 0.6768402154398565,
-    "f1-score": 0.7904262677814446,
+    "f1-score": 0.7904262677814448,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
 [[739, 354], [6, 15]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981149012567325,
@@ -939,30 +939,30 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1093, 0], [21, 0]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2642
-    - lnltotpop: 0.1895
-    - t_escal: 0.1625
-    - mounterr: 0.1196
-    - groupsize: 0.1117
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2639
+    - lnltotpop: 0.1896
+    - t_escal: 0.1628
+    - mounterr: 0.1189
+    - groupsize: 0.1113
 
 --------------------------------------------------
 
 --- POLITICAL OPPORTUNITY Theory ---
   Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7273
-  AI-tuned AUC (Test Set):    0.6982
-  Improvement (AI - Human):   -0.0291 ✗
-  Best AI Params (used for final AI model): {'n_estimators': 1600, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 5/10
-    Max AI Validation AUC during optimization: 0.7343
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7343, Params: {'n_estimators': 1600, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7314, Params: {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7295, Params: {'n_estimators': 1800, 'max_depth': 18, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7272
+  AI-tuned AUC (Test):    0.7055
+  Improvement (AI - Human):   -0.0217 (Human Win/Draw)
+  Best AI Params used: {'n_estimators': 1400, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 1/10
+    Highest AI Validation AUC during search: 0.7293
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7293, Params: {'n_estimators': 1400, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7248, Params: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7248, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.9911634756995582,
@@ -973,7 +973,7 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "1.0": {
     "precision": 0.034482758620689655,
     "recall": 0.7142857142857143,
-    "f1-score": 0.06578947368421052,
+    "f1-score": 0.06578947368421054,
     "support": 21.0
   },
   "accuracy": 0.6175942549371634,
@@ -993,66 +993,66 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   Human Model Confusion Matrix (Test Set):
 [[673, 420], [6, 15]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9819819819819819,
-    "recall": 0.9972552607502287,
-    "f1-score": 0.9895596913300045,
+    "precision": 0.9819494584837545,
+    "recall": 0.9954254345837146,
+    "f1-score": 0.9886415265788279,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.25,
+    "precision": 0.16666666666666666,
     "recall": 0.047619047619047616,
-    "f1-score": 0.08,
+    "f1-score": 0.07407407407407407,
     "support": 21.0
   },
-  "accuracy": 0.9793536804308797,
+  "accuracy": 0.9775583482944344,
   "macro avg": {
-    "precision": 0.615990990990991,
-    "recall": 0.5224371541846382,
-    "f1-score": 0.5347798456650023,
+    "precision": 0.5743080625752106,
+    "recall": 0.5215222411013811,
+    "f1-score": 0.531357800326451,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.968183398838695,
-    "recall": 0.9793536804308797,
-    "f1-score": 0.9724135930194749,
+    "precision": 0.9665805728211344,
+    "recall": 0.9775583482944344,
+    "f1-score": 0.9714010270253272,
     "support": 1114.0
   }
 }
   AI Model Confusion Matrix (Test Set):
-[[1090, 3], [20, 1]]
+[[1088, 5], [20, 1]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2277
-    - lv2x_polyarchy: 0.1966
-    - lnltotpop: 0.1668
-    - t_escal: 0.1389
-    - groupsize: 0.1127
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2294
+    - lv2x_polyarchy: 0.1975
+    - lnltotpop: 0.1677
+    - t_escal: 0.1390
+    - groupsize: 0.1105
 
 --------------------------------------------------
 
 --- GRIEVANCES Theory ---
   Features used: ['t_escal', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7429
-  AI-tuned AUC (Test Set):    0.7589
-  Improvement (AI - Human):   +0.0160 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 8/10
-    Max AI Validation AUC during optimization: 0.7845
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7845, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7706, Params: {'n_estimators': 1400, 'max_depth': 24, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7691, Params: {'n_estimators': 1350, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7434
+  AI-tuned AUC (Test):    0.7532
+  Improvement (AI - Human):   +0.0098 (AI Win!)
+  Best AI Params used: {'n_estimators': 2600, 'max_depth': 30, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 10/10
+    Highest AI Validation AUC during search: 0.7723
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7723, Params: {'n_estimators': 2600, 'max_depth': 30, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7712, Params: {'n_estimators': 2300, 'max_depth': 28, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7708, Params: {'n_estimators': 1800, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.99039780521262,
     "recall": 0.6605672461116194,
-    "f1-score": 0.7925356750823271,
+    "f1-score": 0.7925356750823273,
     "support": 1093.0
   },
   "1.0": {
@@ -1065,20 +1065,20 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   "macro avg": {
     "precision": 0.5133807207881281,
     "recall": 0.663616956389143,
-    "f1-score": 0.43075059616185324,
+    "f1-score": 0.4307505961618533,
     "support": 1114.0
   },
   "weighted avg": {
     "precision": 0.9724133190853053,
     "recall": 0.6606822262118492,
-    "f1-score": 0.7788956631302087,
+    "f1-score": 0.7788956631302089,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
 [[722, 371], [7, 14]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981998199819982,
@@ -1109,61 +1109,61 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1091, 2], [20, 1]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2754
-    - lnltotpop: 0.2044
-    - t_escal: 0.1742
-    - groupsize: 0.1370
-    - numb_rel_grps: 0.1001
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2741
+    - lnltotpop: 0.2081
+    - t_escal: 0.1740
+    - groupsize: 0.1358
+    - numb_rel_grps: 0.1006
 
 --------------------------------------------------
 
 --- POM GM Theory ---
   Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7468
-  AI-tuned AUC (Test Set):    0.7636
-  Improvement (AI - Human):   +0.0168 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 4/10
-    Max AI Validation AUC during optimization: 0.7734
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7734, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7733, Params: {'n_estimators': 1300, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7720, Params: {'n_estimators': 1550, 'max_depth': 28, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7474
+  AI-tuned AUC (Test):    0.7640
+  Improvement (AI - Human):   +0.0166 (AI Win!)
+  Best AI Params used: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 3/10
+    Highest AI Validation AUC during search: 0.7737
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7737, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7714, Params: {'n_estimators': 1700, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7697, Params: {'n_estimators': 1800, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9915730337078652,
-    "recall": 0.645928636779506,
-    "f1-score": 0.7822714681440444,
+    "precision": 0.9916083916083916,
+    "recall": 0.6486733760292772,
+    "f1-score": 0.7842920353982301,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.03731343283582089,
+    "precision": 0.03759398496240601,
     "recall": 0.7142857142857143,
-    "f1-score": 0.07092198581560284,
+    "f1-score": 0.07142857142857142,
     "support": 21.0
   },
-  "accuracy": 0.6472172351885098,
+  "accuracy": 0.6499102333931778,
   "macro avg": {
-    "precision": 0.514443233271843,
-    "recall": 0.6801071755326101,
-    "f1-score": 0.4265967269798236,
+    "precision": 0.5146011882853988,
+    "recall": 0.6814795451574958,
+    "f1-score": 0.42786030341340076,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9735842979643168,
-    "recall": 0.6472172351885098,
-    "f1-score": 0.768861827992431,
+    "precision": 0.9736242780181172,
+    "recall": 0.6499102333931778,
+    "f1-score": 0.7708538551977249,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[706, 387], [6, 15]]
+[[709, 384], [6, 15]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981998199819982,
@@ -1194,61 +1194,61 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1091, 2], [20, 1]]
 
-  Top 5 Feature Importances (AI Model):
+  Top 5 Important Features (AI Model):
     - lnlrgdpcap: 0.2088
-    - lv2x_polyarchy: 0.1835
-    - lnltotpop: 0.1559
-    - t_escal: 0.1328
-    - groupsize: 0.1048
+    - lv2x_polyarchy: 0.1839
+    - lnltotpop: 0.1556
+    - t_escal: 0.1332
+    - groupsize: 0.1047
 
 --------------------------------------------------
 
 --- POM RMM Theory ---
   Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7339
-  AI-tuned AUC (Test Set):    0.7755
-  Improvement (AI - Human):   +0.0416 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1200, 'max_depth': 12, 'min_samples_split': 4, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 3/10
-    Max AI Validation AUC during optimization: 0.7603
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7603, Params: {'n_estimators': 1200, 'max_depth': 12, 'min_samples_split': 4, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7371, Params: {'n_estimators': 1400, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      3. Val AUC: 0.7350, Params: {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7342
+  AI-tuned AUC (Test):    0.7530
+  Improvement (AI - Human):   +0.0189 (AI Win!)
+  Best AI Params used: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 0/10
+    Highest AI Validation AUC during search: 0.7089
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7089, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7081, Params: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7072, Params: {'n_estimators': 1400, 'max_depth': 22, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9943661971830986,
-    "recall": 0.645928636779506,
-    "f1-score": 0.7831392124237382,
+    "precision": 0.9943582510578279,
+    "recall": 0.6450137236962489,
+    "f1-score": 0.7824639289678137,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.04207920792079208,
+    "precision": 0.04197530864197531,
     "recall": 0.8095238095238095,
-    "f1-score": 0.08,
+    "f1-score": 0.07981220657276995,
     "support": 21.0
   },
-  "accuracy": 0.6490125673249552,
+  "accuracy": 0.6481149012567325,
   "macro avg": {
-    "precision": 0.5182227025519454,
-    "recall": 0.7277262231516577,
-    "f1-score": 0.4315696062118691,
+    "precision": 0.5181667798499017,
+    "recall": 0.7272687666100293,
+    "f1-score": 0.43113806777029184,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.976414647116215,
-    "recall": 0.6490125673249552,
-    "f1-score": 0.7698843439669172,
+    "precision": 0.9764048921792526,
+    "recall": 0.6481149012567325,
+    "f1-score": 0.7692182501793973,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[706, 387], [4, 17]]
+[[705, 388], [4, 17]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981149012567325,
@@ -1279,61 +1279,61 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1093, 0], [21, 0]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.1970
-    - lv2x_polyarchy: 0.1753
-    - lnltotpop: 0.1398
-    - t_escal: 0.1230
-    - mounterr: 0.0994
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.1956
+    - lv2x_polyarchy: 0.1754
+    - lnltotpop: 0.1421
+    - t_escal: 0.1238
+    - mounterr: 0.1009
 
 --------------------------------------------------
 
 --- RMM GM Theory ---
   Features used: ['t_escal', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test Set): 0.7251
-  AI-tuned AUC (Test Set):    0.8019
-  Improvement (AI - Human):   +0.0768 ✓
-  Best AI Params (used for final AI model): {'n_estimators': 1350, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  LLM Optimization History:
-    Iterations beating human TEST baseline (Validation AUC): 9/10
-    Max AI Validation AUC during optimization: 0.7622
-    Top 3 LLM Suggested Parameters (by Validation AUC during optimization):
-      1. Val AUC: 0.7622, Params: {'n_estimators': 1350, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7601, Params: {'n_estimators': 1600, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7587, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Human-tuned AUC (Test): 0.7246
+  AI-tuned AUC (Test):    0.7968
+  Improvement (AI - Human):   +0.0721 (AI Win!)
+  Best AI Params used: {'n_estimators': 1800, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
+  AI Optimization Journey:
+    Times AI's validation AUC beat human's test AUC: 5/10
+    Highest AI Validation AUC during search: 0.7674
+    Top 3 AI Suggested Parameters (by Validation AUC):
+      1. Val AUC: 0.7674, Params: {'n_estimators': 1800, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      2. Val AUC: 0.7591, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+      3. Val AUC: 0.7320, Params: {'n_estimators': 1600, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
 
-  Human Model Classification Report (Test Set):
+  Human Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9887165021156559,
-    "recall": 0.6413540713632205,
-    "f1-score": 0.7780244173140954,
+    "precision": 0.9887005649717514,
+    "recall": 0.6404391582799634,
+    "f1-score": 0.7773459189339256,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.03209876543209877,
+    "precision": 0.03201970443349754,
     "recall": 0.6190476190476191,
-    "f1-score": 0.06103286384976526,
+    "f1-score": 0.06088992974238876,
     "support": 21.0
   },
-  "accuracy": 0.6409335727109515,
+  "accuracy": 0.6400359066427289,
   "macro avg": {
-    "precision": 0.5104076337738773,
-    "recall": 0.6302008452054197,
-    "f1-score": 0.41952864058193035,
+    "precision": 0.5103601347026244,
+    "recall": 0.6297433886637913,
+    "f1-score": 0.41911792433815714,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.97068331318356,
-    "recall": 0.6409335727109515,
-    "f1-score": 0.7645084185504052,
+    "precision": 0.970666186092664,
+    "recall": 0.6400359066427289,
+    "f1-score": 0.7638400160856111,
     "support": 1114.0
   }
 }
   Human Model Confusion Matrix (Test Set):
-[[701, 392], [8, 13]]
+[[700, 393], [8, 13]]
 
-  AI Model Classification Report (Test Set):
+  AI Model Report (Test Set):
 {
   "0.0": {
     "precision": 0.981149012567325,
@@ -1364,14 +1364,14 @@ Note: 'Human-tuned' in this report refers to models replicating R's caret::train
   AI Model Confusion Matrix (Test Set):
 [[1093, 0], [21, 0]]
 
-  Top 5 Feature Importances (AI Model):
-    - lnlrgdpcap: 0.2425
-    - lnltotpop: 0.1720
-    - t_escal: 0.1486
-    - mounterr: 0.1138
-    - groupsize: 0.1087
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.2422
+    - lnltotpop: 0.1724
+    - t_escal: 0.1489
+    - mounterr: 0.1135
+    - groupsize: 0.1097
 
 --------------------------------------------------
 
 
-Report generated on: 2025-06-19 01:28:02
+Report finished on: 2025-06-19 18:07:14
