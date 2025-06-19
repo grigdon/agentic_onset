@@ -39,7 +39,7 @@ STAGE1_TARGET = "nviol_sdm_onset"
 STAGE2_TARGET = "firstescal"
 
 ALL_NUMERIC_FEATURES = ['groupsize', 'lsepkin_adjregbase1', 'lnlrgdpcap', 'lnltotpop', 'lv2x_polyarchy', 'numb_rel_grps']
-ALL_CATEGORICAL_FEATURES = ['status_excl', 'lost_autonomy', 'downgr2_incl', 'downgr2_aut', 'regaut', 'lgiantoilfield', 'mounterr', 'noncontiguous', 'lfederal', 'coldwar']
+ALL_CATEGORICAL_FEATURES = ['status_excl', 'lost_autonomy', 'downlgr2_incl', 'downgr2_aut', 'regaut', 'lgiantoilfield', 'mounterr', 'noncontiguous', 'lfederal', 'coldwar']
 
 OPENAI_MODEL = "gpt-4-turbo"
 MAX_ITERATIONS = 10
@@ -90,7 +90,7 @@ def load_and_preprocess_data():
     print("\n=== Loading raw data ===")
     try:
         # Update path to use current directory
-        df = pd.read_stata("onset_escalation_data.dta")
+        df = pd.read_csv("onset_escalation_data.csv")
     except FileNotFoundError:
         print("Error: The data file 'onset_escalation_data.dta' was not found in the specified path.")
         print("Please update the path in the 'load_and_preprocess_data' function.")
