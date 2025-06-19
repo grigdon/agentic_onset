@@ -1,125 +1,58 @@
-# Git and GitHub Setup Guide
+# Comparing AI-Tuned vs. Human-Tuned Random Forest Models for Conflict Prediction
 
-## Key Terms
+This project explores how a Large Language Model (LLM) can optimize machine learning models compared to traditional human-guided methods. Specifically, it uses Random Forest models to predict political conflict "onset" (when nonviolent conflict begins) and "escalation" (when nonviolent conflict turns violent).
 
-**Git** is a command-line tool that allows you to perform *source control*, which is a system for tracking and managing changes to code and files over time.
+## How It Works (A High-Level Overview)
 
-**GitHub** is a web-based platform that hosts Git repositories in the cloud. It provides a remote location to store your Git repositories, enables collaboration through features like pull requests and issues, and offers additional tools for project management, code review, and deployment.
+At its core, this script sets up a "competition" between two approaches to building a good predictive model:
 
-**Repository (Repo)** is a directory or folder that contains your project files along with the complete history of changes tracked by Git.
+1.  **The "Human-Tuned" Baseline:** This represents a standard, robust approach to tuning a Random Forest model, similar to how an experienced data analyst might do it using established best practices (like those found in R's `caret` package). It involves careful cross-validation and specific strategies to handle imbalanced datasets.
 
-**Commit** is a snapshot of your project at a specific point in time, containing the changes you've made along with a message describing what was changed.
+2.  **The "AI-Tuned" Approach:** Here, an advanced AI (a Large Language Model like GPT-4) is given the task of suggesting the best settings (hyperparameters) for the Random Forest model. The AI iteratively learns from its previous suggestions, aiming to improve the model's performance on a dedicated validation set.
 
-**Branch** is a parallel version of your repository that allows you to work on different features or experiments without affecting the main codebase.
+The goal is to see if the AI can discover optimal model settings that lead to better predictive performance than the human-tuned baseline when both are evaluated on completely unseen data.
 
-**Remote** is a version of your repository that is hosted on a server (like GitHub) rather than on your local machine.
+## Key Steps of the Project
 
-**SSH Key** is a cryptographic key pair that provides a secure way to authenticate with GitHub without entering your username and password each time.
+The script follows a structured process for each prediction stage ("onset" and "escalation") and for various theoretical models (different sets of input variables):
 
-## Installation Notes
+1.  **Data Preparation:**
+    * The script first loads the raw conflict data.
+    * It then applies specific filters, mirroring exact data exclusions from previous research to ensure consistency.
+    * Crucially, for each prediction stage (onset/escalation), it cleans the data by removing any rows with missing information in the variables relevant to *any* of the theoretical models for that stage.
+    * Finally, the data is split into a main "training" set and a held-out "test" set. This split is "group-aware," meaning that all observations related to a single conflict group (`gwgroupid`) stay together, either in the training or test set. This prevents the model from "cheating" by seeing parts of a conflict it's supposed to predict.
 
-**Important**: Commands formatted like `git commit -m "this is the message"` are complete commands that should be pasted into the terminal exactly as shown. Be careful not to add any additional whitespace or other characters when pasting commands.
+2.  **Human-Tuned Model Training:**
+    * For each theoretical model, a Random Forest classifier is trained using parameters and a tuning strategy designed to replicate a well-established "human-tuned" approach from statistical software (R's `caret` package).
+    * This involves an internal cross-validation process where the model's `max_features` (a key Random Forest setting) is optimized.
+    * To handle class imbalance (where one outcome, like "escalation," is much rarer than "no escalation"), a form of "downsampling" is applied to the training data.
 
-**Tip**: If "Cmd + V" (paste) doesn't work in the terminal, try "Cmd + Shift + V". The same applies for "Cmd + C" (copy).
+3.  **AI-Tuned Model Optimization:**
+    * If enabled, the LLM takes over for this phase. The *overall training set* is further divided into an "AI-training" set and an "AI-validation" set (again, using a group-aware split).
+    * The LLM is given information about the model's purpose, its current performance (based on the human baseline), and a history of its own previous suggestions.
+    * The LLM then suggests a new set of Random Forest hyperparameters.
+    * A Random Forest model is built with these suggested parameters and evaluated on the "AI-validation" set.
+    * This feedback (the validation performance) is given back to the LLM, allowing it to refine its suggestions over several iterations.
 
-## Installation Guide
+4.  **Final Model Training and Evaluation:**
+    * Once the human-tuned model is optimized, and the AI has found its "best" parameters, both models are then re-trained using their respective optimal settings on the *entire* main training dataset.
+    * Both the human-tuned and AI-tuned models are then rigorously evaluated on the completely unseen "test" dataset. This ensures a fair comparison of their true predictive capabilities. The primary metric used for comparison is the Area Under the Receiver Operating Characteristic Curve (AUC), which is particularly useful for imbalanced classification problems.
 
-### Step 0: Open Terminal
-Open the 'Terminal' application on your Mac. All commands will be pasted 'as-is', and then you will simply press 'Enter'.
+5.  **Results and Reporting:**
+    * The script generates plots (like ROC curves and bar charts) to visually compare the performance of the human-tuned and AI-tuned models.
+    * A detailed text report is also produced, summarizing AUC scores, classification reports, feature importances, and the AI's optimization journey for each theoretical model and prediction stage.
+    * All raw results and plotting data are saved for further analysis.
 
-### Step 1: Install Git
+## Running the Script
 
-First, install Homebrew (a package manager for Mac):
+To run this script, you will need:
+
+* **Python 3.x**
+* The required Python libraries (listed at the top of the script; you can install them using `pip install pandas numpy scikit-learn matplotlib seaborn tqdm openai`).
+* A data file named `onset_escalation_data.csv` in the same directory as the script.
+* (Optional, for AI tuning) An [OpenAI API key](https://platform.openai.com/account/api-keys).
+
+You can run the script from your terminal:
+
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-Then install Git:
-```bash
-brew install git
-```
-
-**Verify Installation:**
-```bash
-git --version
-```
-
-### Step 2: Configure Git
-
-Set up your global Git configuration with your name and email:
-
-```bash
-# Set your name
-git config --global user.name "Your Full Name"
-
-# Set your email (use the same email as your GitHub account)
-git config --global user.email "your.email@example.com"
-
-# Optional: Set default branch name to 'main'
-git config --global init.defaultBranch main
-
-# View your configuration
-git config --list
-```
-
-### Step 3: Generate SSH Key
-
-**Generate a New SSH Key:**
-```bash
-# Generate SSH key (replace with your GitHub email)
-ssh-keygen -t ed25519 -C "your.email@example.com"
-```
-
-When prompted:
-- **File location**: Press Enter to use default location (`~/.ssh/id_ed25519`)
-- **Passphrase**: Press Enter for no passphrase
-
-**Start SSH Agent and Add Key:**
-```bash
-# Start the SSH agent
-eval "$(ssh-agent -s)"
-
-# Add SSH key to ssh-agent
-ssh-add ~/.ssh/id_ed25519
-```
-
-### Step 4: Add SSH Key to GitHub
-
-**Copy Your Public Key:**
-```bash
-# Print your public key, then copy it (it will be a very long string of characters)
-cat ~/.ssh/id_ed25519.pub
-```
-
-**Add Key to GitHub:**
-1. Go to GitHub.com and sign in
-2. Click your profile picture → **Settings**
-3. In the left sidebar, click **SSH and GPG keys**
-4. Click **New SSH key**
-5. Add a descriptive title (e.g., "MacBook Pro")
-6. Paste your key into the "Key" field
-7. Click **Add SSH key**
-
-**Test SSH Connection in Terminal:**
-```bash
-ssh -T git@github.com
-```
-
-You should see a message like: "Hi [*username*]! You've successfully authenticated..."
-
-### Step 5: Working with Remote Repositories
-
-**Clone an Existing Repository:**
-```bash
-# Clone using SSH 
-git clone git@github.com:grigdon/agentic_onset.git
-
-# Navigate to the repository
-cd agentic_onset
-```
-Congratulations! You just cloned the repository from the command line interface! The repository is now located at `~/agentic_onset/`, assuming everything went well.
-
-### Some helpful links
-
-- https://www.unixtutorial.org/basic-unix-commands/
-- https://education.github.com/git-cheat-sheet-education.pdf
+python your_script_name.py --api_key YOUR_OPENAI_API_KEY

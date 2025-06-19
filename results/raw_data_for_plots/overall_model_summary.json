@@ -1,0 +1,306 @@
+[
+    {
+        "stage": "onset",
+        "theory": "base",
+        "human_auc": 0.7938727600387163,
+        "ai_auc": 0.750068181453575,
+        "improvement": -0.04380457858514131,
+        "best_ai_params": {
+            "n_estimators": 2000,
+            "max_depth": null,
+            "min_samples_split": 2,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "log2",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "complete",
+        "human_auc": 0.7955010935770397,
+        "ai_auc": 0.8026882209186047,
+        "improvement": 0.007187127341565014,
+        "best_ai_params": {
+            "n_estimators": 1200,
+            "max_depth": 25,
+            "min_samples_split": 3,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "resource_mobilization",
+        "human_auc": 0.7818353912545923,
+        "ai_auc": 0.7905305319222893,
+        "improvement": 0.008695140667696943,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 20,
+            "min_samples_split": 3,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "political_opportunity",
+        "human_auc": 0.783471746140395,
+        "ai_auc": 0.7972069668076642,
+        "improvement": 0.013735220667269177,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 20,
+            "min_samples_split": 4,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "grievances",
+        "human_auc": 0.8051213629873638,
+        "ai_auc": 0.791487746054834,
+        "improvement": -0.013633616932529846,
+        "best_ai_params": {
+            "n_estimators": 1200,
+            "max_depth": 20,
+            "min_samples_split": 2,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "pom_gm",
+        "human_auc": 0.7986481355714676,
+        "ai_auc": 0.8265116229324978,
+        "improvement": 0.02786348736103017,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 20,
+            "min_samples_split": 4,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "log2",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "pom_rmm",
+        "human_auc": 0.7805733659178293,
+        "ai_auc": 0.815332538328672,
+        "improvement": 0.0347591724108427,
+        "best_ai_params": {
+            "n_estimators": 1300,
+            "max_depth": 15,
+            "min_samples_split": 2,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced"
+        }
+    },
+    {
+        "stage": "onset",
+        "theory": "rmm_gm",
+        "human_auc": 0.7989155138207817,
+        "ai_auc": 0.8419553906128844,
+        "improvement": 0.04303987679210264,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 20,
+            "min_samples_split": 3,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "base",
+        "human_auc": 0.6343615213697555,
+        "ai_auc": 0.6903237049623143,
+        "improvement": 0.05596218359255878,
+        "best_ai_params": {
+            "n_estimators": 1300,
+            "max_depth": 22,
+            "min_samples_split": 2,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "complete",
+        "human_auc": 0.7353722824903062,
+        "ai_auc": 0.7827299263712805,
+        "improvement": 0.0473576438809743,
+        "best_ai_params": {
+            "n_estimators": 1200,
+            "max_depth": 20,
+            "min_samples_split": 4,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "resource_mobilization",
+        "human_auc": 0.7186860105432842,
+        "ai_auc": 0.731669062867599,
+        "improvement": 0.012983052324314848,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 20,
+            "min_samples_split": 4,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "political_opportunity",
+        "human_auc": 0.7273123338997081,
+        "ai_auc": 0.6982311680390363,
+        "improvement": -0.029081165860671776,
+        "best_ai_params": {
+            "n_estimators": 1600,
+            "max_depth": 15,
+            "min_samples_split": 2,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "grievances",
+        "human_auc": 0.742887639959918,
+        "ai_auc": 0.7588550516272383,
+        "improvement": 0.015967411667320297,
+        "best_ai_params": {
+            "n_estimators": 1200,
+            "max_depth": 20,
+            "min_samples_split": 3,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "log2",
+            "class_weight": "balanced"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "pom_gm",
+        "human_auc": 0.7468304796758594,
+        "ai_auc": 0.7636038862022394,
+        "improvement": 0.01677340652638004,
+        "best_ai_params": {
+            "n_estimators": 1500,
+            "max_depth": 25,
+            "min_samples_split": 4,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "log2",
+            "class_weight": "balanced_subsample"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "pom_rmm",
+        "human_auc": 0.7338909946412233,
+        "ai_auc": 0.7754541889949026,
+        "improvement": 0.04156319435367928,
+        "best_ai_params": {
+            "n_estimators": 1200,
+            "max_depth": 12,
+            "min_samples_split": 4,
+            "min_samples_leaf": 1,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced"
+        }
+    },
+    {
+        "stage": "escalation",
+        "theory": "rmm_gm",
+        "human_auc": 0.7251339694157627,
+        "ai_auc": 0.8019431011196793,
+        "improvement": 0.07680913170391657,
+        "best_ai_params": {
+            "n_estimators": 1350,
+            "max_depth": 18,
+            "min_samples_split": 2,
+            "min_samples_leaf": 2,
+            "bootstrap": true,
+            "random_state": 666,
+            "n_jobs": -1,
+            "oob_score": false,
+            "max_features": "sqrt",
+            "class_weight": "balanced_subsample"
+        }
+    }
+]
