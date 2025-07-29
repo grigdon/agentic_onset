@@ -410,7 +410,7 @@ def llm_hyperparameter_optimization(client, X_train_ai, y_train_ai, X_val_ai, y_
             "params": suggested_params, 
             "applied_params": current_iter_params, 
             "validation_auc": current_val_auc,
-            "beats_human_baseline_test_auc": current_val_auc > human_test_auc 
+            "beats_human_baseline_test_auc": bool(current_val_auc > human_test_auc) 
         }
         trial_history.append(trial_record)
         
@@ -822,6 +822,83 @@ def save_data_for_plotting(all_results):
 
     print(f"All detailed results saved to {output_dir}")
 
+def generate_policy_brief_prompt(stage, theory, result, theory_description):
+    """Generate a prompt for the LLM to create a policy brief."""
+    
+    # Extract top 5 features from AI model
+    top_features = result['ai']['feature_importance'].head(5)['feature'].tolist()
+    
+    # Get the best AUC (AI or human, whichever is better)
+    best_auc = max(result['ai']['auc'], result['human']['auc'])
+    
+    # Stage-specific insights
+    stage_insights = {
+        "onset": "Early mobilization patterns show that economic and demographic factors are critical predictors. Groups with larger populations and higher GDP per capita are more likely to mobilize, while mountainous terrain provides strategic advantages.",
+        "escalation": "Escalation from nonviolent to violent conflict is strongly influenced by political factors and group grievances. Status exclusion and autonomy loss are key triggers, while political system characteristics can either facilitate or prevent escalation."
+    }
+    
+    # Analysis recommendations
+    thresholds = "Economic development levels and group size thresholds vary by region"
+    regions = "Focus on regions with high ethnic diversity and recent autonomy changes"
+    
+    REPORT_PROMPT = f"""
+Generate a conflict prediction briefing for political officials using these insights:
+
+Stage: {stage}
+Theoretical Model: {theory.replace('_', ' ').title()}
+Best AUC: {best_auc:.4f}
+Key Predictors: {top_features}
+
+Stage-Specific Findings:
+{stage_insights[stage]}
+
+Analysis Recommendations:
+1. Focus on {top_features[0]} and {top_features[1]} for policy interventions
+2. Consider nonlinear thresholds: {thresholds}
+3. Priority regions: {regions}
+
+Format concisely using:
+- Key Findings
+- Policy Implications  
+- Monitoring Recommendations
+
+Additional Context:
+- Human-tuned AUC: {result['human']['auc']:.4f}
+- AI-tuned AUC: {result['ai']['auc']:.4f}
+- Improvement: {result['ai']['auc'] - result['human']['auc']:+.4f}
+- Theory Description: {theory_description}
+- Best AI Parameters: {result['best_ai_params']}
+
+Top 5 AI Model Features (by importance):
+{result['ai']['feature_importance'].head(5).to_string(index=False)}
+
+IMPORTANT: Your response must follow this EXACT format and include ALL the information above. Start with the Stage, Theoretical Model, Best AUC, and Key Predictors exactly as shown. Then include the Stage-Specific Findings, Analysis Recommendations, and format your response with Key Findings, Policy Implications, and Monitoring Recommendations sections.
+"""
+    
+    return REPORT_PROMPT
+
+def create_stage_theory_policy_reports(client, all_results):
+    """Generate and save policy briefs for each stage and theory using the LLM."""
+    output_dir = os.path.join('results', 'policy_briefs')
+    os.makedirs(output_dir, exist_ok=True)
+    for stage, results in all_results.items():
+        for theory, result in results.items():
+            theory_description = THEORY_DESCRIPTIONS.get(theory, "No description available.")
+            prompt = generate_policy_brief_prompt(stage, theory, result, theory_description)
+            try:
+                response = client.chat.completions.create(
+                    model=OPENAI_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.3
+                )
+                content = response.choices[0].message.content
+            except Exception as e:
+                content = f"[Error generating policy brief: {e}]"
+            filename = os.path.join(output_dir, f"policy_brief_{stage}_{theory}.txt")
+            with open(filename, 'w') as f:
+                f.write(content)
+            print(f"Policy brief saved to {filename}")
+
 # =====================================================================
 # MAIN FUNCTION DEFINITION -> CALLING MAIN
 # =====================================================================
@@ -989,6 +1066,8 @@ def main():
     if all_results:
         save_data_for_plotting(all_results)
         generate_detailed_report(all_results)
+        if client is not None:
+            create_stage_theory_policy_reports(client, all_results)
         
         # A final quick summary.
         print(f"\n{'='*80}")
