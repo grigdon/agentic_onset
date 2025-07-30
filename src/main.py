@@ -1,9 +1,12 @@
+import matplotlib
+matplotlib.use('Agg') # disable interactive plotting for script execution
+import matplotlib.pyplot as plt
+
 import pandas as pd
 import numpy as np
 import json
 import time
 import argparse
-import matplotlib.pyplot as plt
 import seaborn as sns
 from tqdm import tqdm
 import os
