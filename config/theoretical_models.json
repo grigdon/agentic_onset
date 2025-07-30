@@ -1,0 +1,62 @@
+{
+    "THEORETICAL_MODELS": {
+        "base": {
+            "onset": ["t_claim", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "complete": {
+            "onset": ["t_claim", "lv2x_polyarchy", "lfederal", "regaut", "status_excl", "lost_autonomy",
+                     "downgr2_aut", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "coldwar",
+                     "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lv2x_polyarchy", "lfederal", "regaut", "status_excl", "lost_autonomy",
+                          "downgr2_aut", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "coldwar",
+                          "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "resource_mobilization": {
+            "onset": ["t_claim", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "coldwar",
+                     "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "coldwar",
+                          "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "political_opportunity": {
+            "onset": ["t_claim", "lv2x_polyarchy", "lfederal", "regaut", "coldwar", "noncontiguous",
+                     "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lv2x_polyarchy", "lfederal", "regaut", "coldwar", "noncontiguous",
+                          "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "grievances": {
+            "onset": ["t_claim", "status_excl", "downgr2_aut", "lost_autonomy", "coldwar", "noncontiguous",
+                     "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "status_excl", "downgr2_aut", "lost_autonomy", "coldwar", "noncontiguous",
+                          "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "pom_gm": {
+            "onset": ["t_claim", "lv2x_polyarchy", "lfederal", "regaut", "status_excl", "downgr2_aut",
+                     "lost_autonomy", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lv2x_polyarchy", "lfederal", "regaut", "status_excl", "downgr2_aut",
+                          "lost_autonomy", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "pom_rmm": {
+            "onset": ["t_claim", "lv2x_polyarchy", "lfederal", "coldwar", "regaut", "lsepkin_adjregbase1",
+                     "lgiantoilfield", "mounterr", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lv2x_polyarchy", "lfederal", "regaut", "lsepkin_adjregbase1",
+                          "lgiantoilfield", "mounterr", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        },
+        "rmm_gm": {
+            "onset": ["t_claim", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "status_excl",
+                     "downgr2_aut", "lost_autonomy", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"],
+            "escalation": ["t_escal", "lsepkin_adjregbase1", "lgiantoilfield", "mounterr", "status_excl",
+                          "downgr2_aut", "lost_autonomy", "coldwar", "noncontiguous", "lnlrgdpcap", "lnltotpop", "groupsize", "numb_rel_grps"]
+        }
+    },
+    "THEORY_DESCRIPTIONS": {
+        "base": "Control variables only - demographic and temporal factors",
+        "complete": "All theoretical mechanisms combined",
+        "resource_mobilization": "Economic resources, terrain advantages, and mobilization capacity",
+        "political_opportunity": "Political system openness, regime characteristics, and institutional factors",
+        "grievances": "Group status, autonomy loss, and political exclusion",
+        "pom_gm": "Political opportunities interacting with grievances",
+        "pom_rmm": "Political opportunities enabling resource mobilization",
+        "rmm_gm": "Resource availability amplifying grievances"
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "HUMAN_RF_FIXED_PARAMS": {
+        "n_estimators": 1000,
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "bootstrap": true,
+        "random_state": 666,
+        "n_jobs": -1,
+        "oob_score": false
+    },
+    "STAGE1_TARGET": "nviol_sdm_onset",
+    "STAGE2_TARGET": "firstescal",
+    "NUMERIC_FEATURES": [
+        "groupsize",
+        "lsepkin_adjregbase1",
+        "lnlrgdpcap",
+        "lnltotpop",
+        "lv2x_polyarchy",
+        "numb_rel_grps",
+        "mounterr",
+        "t_claim",
+        "t_escal"
+    ],
+    "CATEGORICAL_FEATURES": [
+        "status_excl",
+        "lost_autonomy",
+        "downgr2_aut",
+        "regaut",
+        "lgiantoilfield",
+        "noncontiguous",
+        "lfederal",
+        "coldwar"
+    ]
+}
