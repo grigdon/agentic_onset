@@ -3,10 +3,15 @@ import json
 import os
 import time
 import matplotlib
+import pandas as pd
 
 # Set Matplotlib backend to 'Agg' for non-interactive plotting
 matplotlib.use('Agg')
 
+# load environment variables from .env file
+from dotenv import load_dotenv 
+
+# use OPENAI API key from environment variable
 from openai import OpenAI
 
 # Import modularized functions from src sub-packages
@@ -25,7 +30,6 @@ from src.utils.reporting import (
     generate_detailed_report, save_data_for_plotting, create_stage_theory_policy_reports,
     create_comparison_table, save_detailed_delong_results, create_onesided_text_report,
     create_pairwise_all_models_report, load_optimization_history, load_results_data, # Added DeLong reporting and history/results loader
-    load_all_analysis_results # Added function to load all analysis results
 )
 from src.utils.statistical_tests import load_prediction_data, perform_delong_comparison
 
@@ -41,6 +45,9 @@ def load_config(file_path):
         return json.load(f)
 
 def main():
+
+    load_dotenv()
+
     """
     Main function to run the conflict prediction model analysis.
     Orchestrates data loading, model training (human and AI-tuned),
@@ -52,8 +59,8 @@ def main():
     args = parser.parse_args()
 
     # Load configurations from JSON files
-    models_config = load_config('config/models.json')
-    params_config = load_config('config/params.json')
+    models_config = load_config('config/theoretical_models.json')
+    params_config = load_config('config/default_hyperparameters.json')
     openai_config = load_config('config/openai.json')
 
     THEORETICAL_MODELS = models_config['THEORETICAL_MODELS']

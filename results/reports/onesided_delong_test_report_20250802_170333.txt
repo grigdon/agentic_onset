@@ -1,0 +1,40 @@
+================================================================================
+ONE-SIDED DELONG TEST RESULTS
+Testing: Model1 > Model2 (alternative='greater')
+================================================================================
+
+ONSET STAGE
+----------------------------------------
+AI_grievances             | AUC1: 0.824 | AUC2: 0.805 | Z:  10.21 | p: 0.0000 | CI: [0.015, 0.022] ***
+AI_pom_gm                 | AUC1: 0.829 | AUC2: 0.799 | Z:  15.82 | p: 0.0000 | CI: [0.026, 0.034] ***
+AI_pom_rmm                | AUC1: 0.814 | AUC2: 0.781 | Z:  13.94 | p: 0.0000 | CI: [0.028, 0.038] ***
+AI_rmm_gm                 | AUC1: 0.837 | AUC2: 0.799 | Z:  19.80 | p: 0.0000 | CI: [0.035, 0.042] ***
+AI_political_opportunity  | AUC1: 0.798 | AUC2: 0.783 | Z:   6.90 | p: 0.0000 | CI: [0.011, 0.019] ***
+AI_complete               | AUC1: 0.805 | AUC2: 0.796 | Z:   3.87 | p: 0.0001 | CI: [0.005, 0.014] ***
+AI_resource_mobilization  | AUC1: 0.791 | AUC2: 0.782 | Z:   3.72 | p: 0.0001 | CI: [0.004, 0.013] ***
+AI_base                   | AUC1: 0.750 | AUC2: 0.794 | Z: -17.76 | p: 1.0000 | CI: [-0.049, -0.039] 
+
+Summary: 7/8 models show Model1 significantly better (87.5%)
+
+ESCALATION STAGE
+----------------------------------------
+AI_base                   | AUC1: 0.692 | AUC2: 0.634 | Z:   9.38 | p: 0.0000 | CI: [0.046, 0.070] ***
+AI_rmm_gm                 | AUC1: 0.799 | AUC2: 0.725 | Z:  12.76 | p: 0.0000 | CI: [0.062, 0.085] ***
+AI_complete               | AUC1: 0.781 | AUC2: 0.735 | Z:   7.43 | p: 0.0000 | CI: [0.033, 0.057] ***
+AI_pom_rmm                | AUC1: 0.770 | AUC2: 0.734 | Z:   6.06 | p: 0.0000 | CI: [0.024, 0.047] ***
+AI_pom_gm                 | AUC1: 0.767 | AUC2: 0.747 | Z:   3.14 | p: 0.0008 | CI: [0.008, 0.032] ***
+AI_resource_mobilization  | AUC1: 0.723 | AUC2: 0.719 | Z:   0.86 | p: 0.1936 | CI: [-0.006, 0.015] 
+AI_grievances             | AUC1: 0.731 | AUC2: 0.743 | Z:  -1.61 | p: 0.9467 | CI: [-0.026, 0.002] 
+AI_political_opportunity  | AUC1: 0.713 | AUC2: 0.727 | Z:  -2.13 | p: 0.9834 | CI: [-0.028, -0.001] 
+
+Summary: 5/8 models show Model1 significantly better (62.5%)
+
+OVERALL SUMMARY
+----------------------------------------
+Onset: 7/8 (87.5%)
+Escalation: 5/8 (62.5%)
+Overall: 12/16 (75.0%)
+
+*** p < 0.05 (significant)
+
+================================================================================

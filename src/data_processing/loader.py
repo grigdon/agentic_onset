@@ -1,17 +1,13 @@
 import pandas as pd
-import os
 
+# removes
 def load_and_preprocess_data(file_path):
-    """
-    Loads the main data file and applies initial filtering.
 
-    Args:
-        file_path (str): Path to the raw data CSV file.
-
-    Returns:
-        pd.DataFrame: Filtered DataFrame.
-    """
     df = pd.read_csv(file_path)
+
+    # Filter the DataFrame based on 'isrelevant' and 'exclacc' columns
+    # 'isrelevant' should be 1 and 'exclacc' should be 0
+
     df_filtered = df[(df['isrelevant'] == 1) & (df['exclacc'] == 0)].copy()
     return df_filtered
 

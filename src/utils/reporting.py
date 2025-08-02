@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 from openai import OpenAI
 from pathlib import Path
+from sklearn.metrics import roc_auc_score
 
 def generate_detailed_report(all_results, output_dir='results/reports'):
     """
@@ -443,23 +444,23 @@ def create_pairwise_all_models_report(pairwise_comparison_data, timestamp, outpu
         report_lines.append(f"{'Model 1':<20} {'Model 2':<20} {'AUC 1':<8} {'AUC 2':<8} {'Z-stat':<8} {'p-value':<8} {'CI lower':<10} {'CI upper':<10}")
         report_lines.append("-" * 100)
 
-        # Sort by p-value
-        stage_results.sort(key=lambda x: x['p_value'] if x['p_value'] is not None else float('inf'))
+        # Sort by p-value, using .get() for robustness against missing keys
+        stage_results.sort(key=lambda x: x.get('p_value', float('inf')))
 
         for result in stage_results:
-            significance = "***" if result['significant'] else ""
-            report_lines.append(f"{result['model1']:<20} {result['model2']:<20} {result['auc1']:<8.3f} {result['auc2']:<8.3f} {result['z_statistic']:<8.3f} {result['p_value']:<8.3f} {result['ci_lower']:<10.3f} {result['ci_upper']:.3f} {significance}")
+            significance = "***" if result.get('significant') else ""
+            report_lines.append(f"{result.get('model1', 'N/A'):<20} {result.get('model2', 'N/A'):<20} {result.get('auc1', 0.0):<8.3f} {result.get('auc2', 0.0):<8.3f} {result.get('z_statistic', 0.0):<8.3f} {result.get('p_value', 1.0):<8.3f} {result.get('ci_lower', 0.0):<10.3f} {result.get('ci_upper', 0.0):.3f} {significance}")
 
         # Summary for this stage
         total = len(stage_results)
-        significant = sum(1 for r in stage_results if r['significant'])
+        significant = sum(1 for r in stage_results if r.get('significant'))
         report_lines.append("")
         report_lines.append(f"  Summary: {significant}/{total} comparisons show significant differences ({significant/total*100:.1f}%)")
         report_lines.append("")
 
     # Overall summary
     total = len(pairwise_comparison_data)
-    significant = sum(1 for r in pairwise_comparison_data if r['significant'])
+    significant = sum(1 for r in pairwise_comparison_data if r.get('significant'))
     report_lines.append("OVERALL SUMMARY")
     report_lines.append("-" * 40)
     report_lines.append(f"Total comparisons: {total}")

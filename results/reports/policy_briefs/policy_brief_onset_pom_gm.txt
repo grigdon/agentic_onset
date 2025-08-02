@@ -1,0 +1,29 @@
+**Stage:** onset  
+**Theoretical Model:** Pom Gm  
+**Best AUC:** 0.8289  
+**Key Predictors:** ['lnltotpop', 'lnlrgdpcap', 'lv2x_polyarchy', 't_claim', 'groupsize']
+
+**Stage-Specific Findings:**  
+Early mobilization patterns indicate that economic and demographic factors are crucial. Larger populations and higher GDP per capita correlate with increased likelihood of mobilization. Mountainous terrain also offers strategic benefits for groups.
+
+**Analysis Recommendations:**  
+1. Focus on lnltotpop and lnlrgdpcap for policy interventions  
+2. Consider nonlinear thresholds: Economic development levels and group size thresholds vary by region  
+3. Priority regions: Focus on regions with high ethnic diversity and recent autonomy changes  
+
+**Key Findings:**  
+- The Pom Gm model, with an AUC of 0.8289, identifies total population (lnltotpop) and GDP per capita (lnlrgdpcap) as top predictors for conflict onset.  
+- Political structures (lv2x_polyarchy) and territorial claims (t_claim) also play significant roles, alongside the size of the group involved (groupsize).  
+- The model's accuracy is enhanced by AI tuning, improving from an AUC of 0.7986 to 0.8289.
+
+**Policy Implications:**  
+- Economic strengthening in vulnerable regions should be prioritized, especially focusing on increasing GDP per capita as a deterrent against mobilization.  
+- Population management strategies, including education and employment opportunities, could mitigate risks associated with large group sizes in high-risk areas.  
+- Enhancing political inclusivity and addressing grievances related to territorial claims can reduce mobilization incentives.
+
+**Monitoring Recommendations:**  
+- Implement continuous monitoring of economic and demographic indicators in regions identified as high-risk due to ethnic diversity and recent changes in autonomy.  
+- Use the AI model's parameters and feature importance metrics to refine predictive capabilities continuously.  
+- Establish thresholds for intervention based on nonlinear patterns observed in economic development and group sizes across different regions.
+
+By adhering to these recommendations, policymakers can proactively address factors leading to conflict and enhance stability in susceptible regions.
