@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve
 from scipy import stats
+from scipy.stats import rankdata
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -26,31 +27,6 @@ def load_prediction_data(file_path):
         print(f"Error loading {file_path}: {e}")
         return None, None
 
-def _compute_midrank(x):
-    """
-    Computes midrank for tied values in an array.
-
-    Args:
-        x (np.array): Input array.
-
-    Returns:
-        np.array: Array with midranks.
-    """
-    J = np.argsort(x)
-    Z = x[J]
-    N = len(x)
-    T = np.zeros(N, dtype=np.float64)
-    i = 0
-    while i < N:
-        j = i
-        while j < N and Z[j] == Z[i]:
-            j += 1
-        T[i:j] = 0.5 * (i + j - 1)
-        i = j
-    T2 = np.empty(N, dtype=np.float64)
-    T2[J] = T + 1
-    return T2
-
 def _compute_ground_truth_statistics(true):
     """
     Sorts ground truth labels and counts positive samples.
@@ -71,7 +47,8 @@ def _compute_ground_truth_statistics(true):
 def delong_test_fast(y_true, y_pred1, y_pred2, debug_label=None):
     """
     Performs DeLong's test for comparing the AUCs of two models
-    using a fast, vectorized implementation.
+    using a fast, vectorized implementation. The one-sided p-value tests
+    the alternative hypothesis that model1's AUC is greater than model2's AUC.
 
     Args:
         y_true (np.array): True binary labels.
@@ -102,15 +79,15 @@ def delong_test_fast(y_true, y_pred1, y_pred2, debug_label=None):
         positive_probs_B = probs_B[:m]
         negative_probs_B = probs_B[m:]
 
-        # Midrank computations
-        txA = _compute_midrank(positive_probs_A)
-        tyA = _compute_midrank(negative_probs_A)
-        tzA = _compute_midrank(probs_A)
-        txB = _compute_midrank(positive_probs_B)
-        tyB = _compute_midrank(negative_probs_B)
-        tzB = _compute_midrank(probs_B)
+        # Midrank computations using scipy's optimized function
+        txA = rankdata(positive_probs_A, method='average')
+        tyA = rankdata(negative_probs_A, method='average')
+        tzA = rankdata(probs_A, method='average')
+        txB = rankdata(positive_probs_B, method='average')
+        tyB = rankdata(negative_probs_B, method='average')
+        tzB = rankdata(probs_B, method='average')
 
-        # Calculate AUCs
+        # Calculate AUCs based on Wilcoxon-Mann-Whitney U statistic
         auc1 = tzA[:m].sum() / (m * n) - (m + 1.0) / (2.0 * n)
         auc2 = tzB[:m].sum() / (m * n) - (m + 1.0) / (2.0 * n)
         
@@ -147,7 +124,9 @@ def delong_test_fast(y_true, y_pred1, y_pred2, debug_label=None):
         if abs(z_stat) > 100:
             print(f"Warning: Extreme z-statistic detected: {z_stat}")
 
+        # p-value for H0: AUC1 = AUC2; sf is survival function (1-cdf)
         p_value_two_sided = stats.norm.sf(abs(z_stat)) * 2
+        # p-value for H1: AUC1 > AUC2
         p_value_one_sided = stats.norm.sf(z_stat)
 
         # Handle numerical precision for p-values
@@ -165,7 +144,10 @@ def delong_test_fast(y_true, y_pred1, y_pred2, debug_label=None):
 def perform_delong_comparison(y_true, y_pred1, y_pred2, model1_name, model2_name, debug_label=None):
     """
     Performs a DeLong test comparison between two models and formats the results.
-    Assumes model1 is the 'AI' model and model2 is the 'Human' model for one-sided testing.
+    
+    The one-sided p-value tests the alternative hypothesis that model1's AUC is
+    significantly greater than model2's AUC (H1: AUC1 > AUC2). This function assumes
+    model1 is the 'AI' or new model and model2 is the 'Human' or baseline model.
 
     Args:
         y_true (np.array): True binary labels.
@@ -179,18 +161,16 @@ def perform_delong_comparison(y_true, y_pred1, y_pred2, model1_name, model2_name
         dict: Dictionary containing comparison results, or None if an error occurs.
     """
     try:
-        # Use the fast implementation
         z_score, p_value_two_sided, p_value_one_sided, auc1, auc2 = delong_test_fast(y_true, y_pred1, y_pred2, debug_label=debug_label)
 
         if z_score is None:
             return None
 
-        auc_diff = auc1 - auc2 # Model1 AUC - Model2 AUC
-
+        auc_diff = auc1 - auc2
         significant = p_value_one_sided < 0.05 if p_value_one_sided is not None else False
 
         ci_lower = ci_upper = auc_diff
-        if z_score is not None and z_score != 0:
+        if z_score != 0:
             se_diff = abs(auc_diff / z_score)
             ci_lower = auc_diff - 1.96 * se_diff
             ci_upper = auc_diff + 1.96 * se_diff
