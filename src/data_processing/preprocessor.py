@@ -4,20 +4,6 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
 def create_preprocessor(features, numeric_features_list, categorical_features_list):
-    """
-    Creates a ColumnTransformer for preprocessing features.
-    Numerical features are imputed with the median.
-    Categorical features are one-hot encoded, dropping the first category.
-
-    Args:
-        features (list): List of features to be processed.
-        numeric_features_list (list): Global list of all numeric features.
-        categorical_features_list (list): Global list of all categorical features.
-
-    Returns:
-        ColumnTransformer or str: A configured ColumnTransformer or 'passthrough'
-                                  if no features are provided.
-    """
     numeric_features = [f for f in features if f in numeric_features_list]
     categorical_features = [f for f in features if f in categorical_features_list]
 

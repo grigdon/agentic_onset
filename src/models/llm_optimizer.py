@@ -11,15 +11,6 @@ from tqdm import tqdm
 from src.data_processing.preprocessor import create_preprocessor
 
 def validate_parameters(params):
-    """
-    Validates if the suggested parameters are valid for RandomForestClassifier.
-
-    Args:
-        params (dict): Dictionary of suggested parameters.
-
-    Returns:
-        bool: True if parameters are valid, False otherwise.
-    """
     valid = True
     errors = []
 

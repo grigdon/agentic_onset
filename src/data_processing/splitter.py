@@ -2,23 +2,6 @@ import pandas as pd
 import numpy as np
 
 def group_aware_split(df, target_col, test_size=0.25, random_state=666):
-    """
-    Splits the DataFrame into training and testing sets, ensuring that
-    all samples belonging to the same 'gwgroupid' are kept together
-    in either the train or test set.
-
-    Args:
-        df (pd.DataFrame): The input DataFrame.
-        target_col (str): The name of the target column.
-        test_size (float): The proportion of the dataset to include in the test split.
-        random_state (int): Seed for random number generation for reproducibility.
-
-    Returns:
-        tuple: A tuple containing:
-            - pd.DataFrame: The training DataFrame.
-            - pd.DataFrame: The testing DataFrame.
-            Returns empty DataFrames if a valid split cannot be achieved.
-    """
     unique_groups = df['gwgroupid'].unique()
     np.random.seed(random_state)
 
