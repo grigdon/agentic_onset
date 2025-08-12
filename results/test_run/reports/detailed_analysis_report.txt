@@ -1,0 +1,441 @@
+================================================================================
+COMPREHENSIVE ANALYSIS: AI vs AutoML vs HUMAN-TUNED RANDOM FORESTS
+================================================================================
+
+Model Definitions:
+  'Human-tuned': A baseline using 10-fold CV with downsampling and a small grid search for mtry.
+  'RandSearch (AutoML)': A stronger baseline using 10-fold CV with downsampling and a large, randomized
+                         hyperparameter search (100 candidates).
+  'AI-tuned (Delphi)': The proposed method where hyperparameters were optimized by an LLM.
+
+
+============================== ONSET STAGE BREAKDOWN ==============================
+
+--- BASE Theory ---
+  Features used: ['t_claim', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
+  Human-tuned AUC (Test):      0.7939
+  RandSearch AUC (Test):       0.7939
+  AI-tuned (Delphi) AUC (Test):  0.7939
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0000
+  Best AI Params used: {}
+  No AI optimization history recorded.
+
+  Human Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9952746603662138,
+    "recall": 0.7388730541547907,
+    "f1-score": 0.8481187869636341,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.02055921052631579,
+    "recall": 0.6097560975609756,
+    "f1-score": 0.03977724741447892,
+    "support": 41.0
+  },
+  "accuracy": 0.737722729248153,
+  "macro avg": {
+    "precision": 0.5079169354462648,
+    "recall": 0.6743145758578831,
+    "f1-score": 0.4439480171890565,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9865907547939766,
+    "recall": 0.737722729248153,
+    "f1-score": 0.84091713482945,
+    "support": 4602.0
+  }
+}
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9952746603662138,
+    "recall": 0.7388730541547907,
+    "f1-score": 0.8481187869636341,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.02055921052631579,
+    "recall": 0.6097560975609756,
+    "f1-score": 0.03977724741447892,
+    "support": 41.0
+  },
+  "accuracy": 0.737722729248153,
+  "macro avg": {
+    "precision": 0.5079169354462648,
+    "recall": 0.6743145758578831,
+    "f1-score": 0.4439480171890565,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9865907547939766,
+    "recall": 0.737722729248153,
+    "f1-score": 0.84091713482945,
+    "support": 4602.0
+  }
+}
+
+  AI Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9952746603662138,
+    "recall": 0.7388730541547907,
+    "f1-score": 0.8481187869636341,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.02055921052631579,
+    "recall": 0.6097560975609756,
+    "f1-score": 0.03977724741447892,
+    "support": 41.0
+  },
+  "accuracy": 0.737722729248153,
+  "macro avg": {
+    "precision": 0.5079169354462648,
+    "recall": 0.6743145758578831,
+    "f1-score": 0.4439480171890565,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9865907547939766,
+    "recall": 0.737722729248153,
+    "f1-score": 0.84091713482945,
+    "support": 4602.0
+  }
+}
+
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.2465
+    - lnlrgdpcap: 0.2250
+    - t_claim: 0.1883
+    - groupsize: 0.1725
+    - numb_rel_grps: 0.1290
+
+--------------------------------------------------
+
+--- COMPLETE Theory ---
+  Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
+  Human-tuned AUC (Test):      0.7955
+  RandSearch AUC (Test):       0.7955
+  AI-tuned (Delphi) AUC (Test):  0.7955
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0000
+  Best AI Params used: {}
+  No AI optimization history recorded.
+
+  Human Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9964114832535885,
+    "recall": 0.7305415479061609,
+    "f1-score": 0.843010752688172,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.023052464228934817,
+    "recall": 0.7073170731707317,
+    "f1-score": 0.044649730561970746,
+    "support": 41.0
+  },
+  "accuracy": 0.7303346371142981,
+  "macro avg": {
+    "precision": 0.5097319737412617,
+    "recall": 0.7189293105384462,
+    "f1-score": 0.4438302416250714,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9877396623539775,
+    "recall": 0.7303346371142981,
+    "f1-score": 0.8358980186796596,
+    "support": 4602.0
+  }
+}
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9964114832535885,
+    "recall": 0.7305415479061609,
+    "f1-score": 0.843010752688172,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.023052464228934817,
+    "recall": 0.7073170731707317,
+    "f1-score": 0.044649730561970746,
+    "support": 41.0
+  },
+  "accuracy": 0.7303346371142981,
+  "macro avg": {
+    "precision": 0.5097319737412617,
+    "recall": 0.7189293105384462,
+    "f1-score": 0.4438302416250714,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9877396623539775,
+    "recall": 0.7303346371142981,
+    "f1-score": 0.8358980186796596,
+    "support": 4602.0
+  }
+}
+
+  AI Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9964114832535885,
+    "recall": 0.7305415479061609,
+    "f1-score": 0.843010752688172,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.023052464228934817,
+    "recall": 0.7073170731707317,
+    "f1-score": 0.044649730561970746,
+    "support": 41.0
+  },
+  "accuracy": 0.7303346371142981,
+  "macro avg": {
+    "precision": 0.5097319737412617,
+    "recall": 0.7189293105384462,
+    "f1-score": 0.4438302416250714,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9877396623539775,
+    "recall": 0.7303346371142981,
+    "f1-score": 0.8358980186796596,
+    "support": 4602.0
+  }
+}
+
+  Top 5 Important Features (AI Model):
+    - lnltotpop: 0.1942
+    - lnlrgdpcap: 0.1593
+    - lv2x_polyarchy: 0.1512
+    - t_claim: 0.1131
+    - groupsize: 0.0934
+
+--------------------------------------------------
+
+============================== ESCALATION STAGE BREAKDOWN ==============================
+
+--- BASE Theory ---
+  Features used: ['t_escal', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
+  Human-tuned AUC (Test):      0.6344
+  RandSearch AUC (Test):       0.6344
+  AI-tuned (Delphi) AUC (Test):  0.6344
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0000
+  Best AI Params used: {}
+  No AI optimization history recorded.
+
+  Human Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9877112135176651,
+    "recall": 0.5882891125343093,
+    "f1-score": 0.7373853211009175,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.028077753779697623,
+    "recall": 0.6190476190476191,
+    "f1-score": 0.05371900826446281,
+    "support": 21.0
+  },
+  "accuracy": 0.5888689407540395,
+  "macro avg": {
+    "precision": 0.5078944836486814,
+    "recall": 0.6036683657909642,
+    "f1-score": 0.39555216468269017,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9696211752281702,
+    "recall": 0.5888689407540395,
+    "f1-score": 0.7244975360294942,
+    "support": 1114.0
+  }
+}
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9877112135176651,
+    "recall": 0.5882891125343093,
+    "f1-score": 0.7373853211009175,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.028077753779697623,
+    "recall": 0.6190476190476191,
+    "f1-score": 0.05371900826446281,
+    "support": 21.0
+  },
+  "accuracy": 0.5888689407540395,
+  "macro avg": {
+    "precision": 0.5078944836486814,
+    "recall": 0.6036683657909642,
+    "f1-score": 0.39555216468269017,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9696211752281702,
+    "recall": 0.5888689407540395,
+    "f1-score": 0.7244975360294942,
+    "support": 1114.0
+  }
+}
+
+  AI Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9877112135176651,
+    "recall": 0.5882891125343093,
+    "f1-score": 0.7373853211009175,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.028077753779697623,
+    "recall": 0.6190476190476191,
+    "f1-score": 0.05371900826446281,
+    "support": 21.0
+  },
+  "accuracy": 0.5888689407540395,
+  "macro avg": {
+    "precision": 0.5078944836486814,
+    "recall": 0.6036683657909642,
+    "f1-score": 0.39555216468269017,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9696211752281702,
+    "recall": 0.5888689407540395,
+    "f1-score": 0.7244975360294942,
+    "support": 1114.0
+  }
+}
+
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.3066
+    - lnltotpop: 0.2238
+    - t_escal: 0.1984
+    - groupsize: 0.1322
+    - numb_rel_grps: 0.0876
+
+--------------------------------------------------
+
+--- COMPLETE Theory ---
+  Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
+  Human-tuned AUC (Test):      0.7354
+  RandSearch AUC (Test):       0.7354
+  AI-tuned (Delphi) AUC (Test):  0.7354
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0000
+  Best AI Params used: {}
+  No AI optimization history recorded.
+
+  Human Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9903314917127072,
+    "recall": 0.6559926806953339,
+    "f1-score": 0.7892129884424877,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.035897435897435895,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.0681265206812652,
+    "support": 21.0
+  },
+  "accuracy": 0.6561938958707361,
+  "macro avg": {
+    "precision": 0.5131144638050715,
+    "recall": 0.6613296736810003,
+    "f1-score": 0.42866975456187645,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9723394673212163,
+    "recall": 0.6561938958707361,
+    "f1-score": 0.7756197965008489,
+    "support": 1114.0
+  }
+}
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9903314917127072,
+    "recall": 0.6559926806953339,
+    "f1-score": 0.7892129884424877,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.035897435897435895,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.0681265206812652,
+    "support": 21.0
+  },
+  "accuracy": 0.6561938958707361,
+  "macro avg": {
+    "precision": 0.5131144638050715,
+    "recall": 0.6613296736810003,
+    "f1-score": 0.42866975456187645,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9723394673212163,
+    "recall": 0.6561938958707361,
+    "f1-score": 0.7756197965008489,
+    "support": 1114.0
+  }
+}
+
+  AI Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9903314917127072,
+    "recall": 0.6559926806953339,
+    "f1-score": 0.7892129884424877,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.035897435897435895,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.0681265206812652,
+    "support": 21.0
+  },
+  "accuracy": 0.6561938958707361,
+  "macro avg": {
+    "precision": 0.5131144638050715,
+    "recall": 0.6613296736810003,
+    "f1-score": 0.42866975456187645,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9723394673212163,
+    "recall": 0.6561938958707361,
+    "f1-score": 0.7756197965008489,
+    "support": 1114.0
+  }
+}
+
+  Top 5 Important Features (AI Model):
+    - lnlrgdpcap: 0.1671
+    - lnltotpop: 0.1328
+    - lv2x_polyarchy: 0.1310
+    - t_escal: 0.1074
+    - groupsize: 0.1048
+
+--------------------------------------------------
+
+
+Report finished on: 2025-08-09 13:19:26

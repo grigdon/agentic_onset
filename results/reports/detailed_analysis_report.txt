@@ -1,27 +1,25 @@
 ================================================================================
-COMPREHENSIVE ANALYSIS: AI vs HUMAN-TUNED RANDOM FORESTS
+COMPREHENSIVE ANALYSIS: AI vs AutoML vs HUMAN-TUNED RANDOM FORESTS
 ================================================================================
 
-Just a note:
-  'Human-tuned' means models set up like R's caret::train defaults
-  (10-fold CV with downsampling and mtry tuning) evaluated on the test set.
-  'AI-tuned' models had their settings optimized by an LLM on a validation set,
+Model Definitions:
+  'Human-tuned': A baseline using 10-fold CV with downsampling and a small grid search for mtry.
+  'RandSearch (AutoML)': A stronger baseline using 10-fold CV with downsampling and a large, randomized
+                         hyperparameter search (100 candidates).
+  'AI-tuned (Delphi)': The proposed method where hyperparameters were optimized by an LLM.
+
 
 ============================== ONSET STAGE BREAKDOWN ==============================
 
 --- BASE Theory ---
-  Features used: ['t_claim', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7939
-  AI-tuned AUC (Test):    0.7501
-  Improvement (AI - Human):   -0.0438 (Human Win/Draw)
-  Best AI Params used: {'n_estimators': 2000, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7540
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7540, Params: {'n_estimators': 2000, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7509, Params: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7482, Params: {'n_estimators': 1500, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7939
+  RandSearch AUC (Test):       0.8076
+  AI-tuned (Delphi) AUC (Test):  0.7939
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0137
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -51,62 +49,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3370, 1191], [16, 25]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9954517889630079,
+    "recall": 0.7197982898487174,
+    "f1-score": 0.8354752513042372,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.019938650306748466,
+    "recall": 0.6341463414634146,
+    "f1-score": 0.038661710037174724,
+    "support": 41.0
+  },
+  "accuracy": 0.7190352020860495,
+  "macro avg": {
+    "precision": 0.5076952196348782,
+    "recall": 0.6769723156560661,
+    "f1-score": 0.4370684806707059,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9867607766455575,
+    "recall": 0.7190352020860495,
+    "f1-score": 0.8283763040656562,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925861317051897,
-    "recall": 0.9980267485200613,
-    "f1-score": 0.9952990051382967,
+    "precision": 0.9952746603662138,
+    "recall": 0.7388730541547907,
+    "f1-score": 0.8481187869636341,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4375,
-    "recall": 0.17073170731707318,
-    "f1-score": 0.24561403508771928,
+    "precision": 0.02055921052631579,
+    "recall": 0.6097560975609756,
+    "f1-score": 0.03977724741447892,
     "support": 41.0
   },
-  "accuracy": 0.9906562364189483,
+  "accuracy": 0.737722729248153,
   "macro avg": {
-    "precision": 0.7150430658525948,
-    "recall": 0.5843792279185672,
-    "f1-score": 0.620456520113008,
+    "precision": 0.5079169354462648,
+    "recall": 0.6743145758578831,
+    "f1-score": 0.4439480171890565,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9876407750341961,
-    "recall": 0.9906562364189483,
-    "f1-score": 0.9886199343490586,
+    "precision": 0.9865907547939766,
+    "recall": 0.737722729248153,
+    "f1-score": 0.84091713482945,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4552, 9], [34, 7]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.2490
-    - lnlrgdpcap: 0.2334
-    - t_claim: 0.1926
-    - groupsize: 0.1668
-    - numb_rel_grps: 0.1249
+    - lnltotpop: 0.2465
+    - lnlrgdpcap: 0.2250
+    - t_claim: 0.1883
+    - groupsize: 0.1725
+    - numb_rel_grps: 0.1290
 
 --------------------------------------------------
 
 --- COMPLETE Theory ---
-  Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7955
-  AI-tuned AUC (Test):    0.8046
-  Improvement (AI - Human):   +0.0091 (AI Win!)
-  Best AI Params used: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7714
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7714, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7713, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7590, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7955
+  RandSearch AUC (Test):       0.8589
+  AI-tuned (Delphi) AUC (Test):  0.7955
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0634
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -136,62 +155,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3332, 1229], [12, 29]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9974241556954779,
+    "recall": 0.7640868230651173,
+    "f1-score": 0.8653010552451893,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.02888086642599278,
+    "recall": 0.7804878048780488,
+    "f1-score": 0.0557006092254134,
+    "support": 41.0
+  },
+  "accuracy": 0.7642329421990439,
+  "macro avg": {
+    "precision": 0.5131525110607353,
+    "recall": 0.7722873139715831,
+    "f1-score": 0.46050083223530136,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9887952389505738,
+    "recall": 0.7642329421990439,
+    "f1-score": 0.8580881872993373,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9917337393952578,
-    "recall": 0.9995614996711247,
-    "f1-score": 0.9956322341122515,
+    "precision": 0.9964114832535885,
+    "recall": 0.7305415479061609,
+    "f1-score": 0.843010752688172,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6,
-    "recall": 0.07317073170731707,
-    "f1-score": 0.13043478260869565,
+    "precision": 0.023052464228934817,
+    "recall": 0.7073170731707317,
+    "f1-score": 0.044649730561970746,
     "support": 41.0
   },
-  "accuracy": 0.9913081269013473,
+  "accuracy": 0.7303346371142981,
   "macro avg": {
-    "precision": 0.7958668696976289,
-    "recall": 0.5363661156892209,
-    "f1-score": 0.5630335083604736,
+    "precision": 0.5097319737412617,
+    "recall": 0.7189293105384462,
+    "f1-score": 0.4438302416250714,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9882437169451914,
-    "recall": 0.9913081269013473,
-    "f1-score": 0.9879240429971614,
+    "precision": 0.9877396623539775,
+    "recall": 0.7303346371142981,
+    "f1-score": 0.8358980186796596,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4559, 2], [38, 3]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.1705
-    - lnlrgdpcap: 0.1516
-    - lv2x_polyarchy: 0.1448
-    - t_claim: 0.1219
-    - groupsize: 0.0956
+    - lnltotpop: 0.1942
+    - lnlrgdpcap: 0.1593
+    - lv2x_polyarchy: 0.1512
+    - t_claim: 0.1131
+    - groupsize: 0.0934
 
 --------------------------------------------------
 
 --- RESOURCE MOBILIZATION Theory ---
-  Features used: ['t_claim', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7818
-  AI-tuned AUC (Test):    0.7905
-  Improvement (AI - Human):   +0.0087 (AI Win!)
-  Best AI Params used: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7625
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7625, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7497, Params: {'n_estimators': 1300, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7436, Params: {'n_estimators': 1200, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7818
+  RandSearch AUC (Test):       0.8459
+  AI-tuned (Delphi) AUC (Test):  0.7818
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0640
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -221,62 +261,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3251, 1310], [13, 28]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9965527147371445,
+    "recall": 0.7605788204341153,
+    "f1-score": 0.8627207162397413,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.025869759143621766,
+    "recall": 0.7073170731707317,
+    "f1-score": 0.04991394148020654,
+    "support": 41.0
+  },
+  "accuracy": 0.7601043024771839,
+  "macro avg": {
+    "precision": 0.5112112369403831,
+    "recall": 0.7339479468024235,
+    "f1-score": 0.45631732885997395,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9879047353413742,
+    "recall": 0.7601043024771839,
+    "f1-score": 0.8554792825663079,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9923780487804879,
-    "recall": 0.9991229993422495,
-    "f1-score": 0.9957391019337922,
+    "precision": 0.9960171568627451,
+    "recall": 0.7127822845867134,
+    "f1-score": 0.830926517571885,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6,
-    "recall": 0.14634146341463414,
-    "f1-score": 0.23529411764705882,
+    "precision": 0.02092675635276532,
+    "recall": 0.6829268292682927,
+    "f1-score": 0.04060913705583756,
     "support": 41.0
   },
-  "accuracy": 0.9915254237288136,
+  "accuracy": 0.71251629726206,
   "macro avg": {
-    "precision": 0.7961890243902439,
-    "recall": 0.5727322313784418,
-    "f1-score": 0.6155166097904256,
+    "precision": 0.5084719566077552,
+    "recall": 0.6978545569275031,
+    "f1-score": 0.43576782731386127,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9888822860686235,
-    "recall": 0.9915254237288136,
-    "f1-score": 0.9889641683493169,
+    "precision": 0.9873299107912742,
+    "recall": 0.71251629726206,
+    "f1-score": 0.8238854457333021,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4557, 4], [35, 6]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.2185
-    - lnlrgdpcap: 0.2066
-    - t_claim: 0.1703
-    - groupsize: 0.1283
-    - mounterr: 0.1113
+    - lnltotpop: 0.2140
+    - lnlrgdpcap: 0.1937
+    - t_claim: 0.1563
+    - groupsize: 0.1354
+    - mounterr: 0.1211
 
 --------------------------------------------------
 
 --- POLITICAL OPPORTUNITY Theory ---
-  Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7835
-  AI-tuned AUC (Test):    0.7982
-  Improvement (AI - Human):   +0.0148 (AI Win!)
-  Best AI Params used: {'n_estimators': 1300, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7386
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7386, Params: {'n_estimators': 1300, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7373, Params: {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      3. Val AUC: 0.7294, Params: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7835
+  RandSearch AUC (Test):       0.8139
+  AI-tuned (Delphi) AUC (Test):  0.7835
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0304
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -306,62 +367,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3427, 1134], [14, 27]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.995840760546643,
+    "recall": 0.7349265511949133,
+    "f1-score": 0.845717169168664,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.021844660194174758,
+    "recall": 0.6585365853658537,
+    "f1-score": 0.042286609240407204,
+    "support": 41.0
+  },
+  "accuracy": 0.7342459800086919,
+  "macro avg": {
+    "precision": 0.5088427103704088,
+    "recall": 0.6967315682803835,
+    "f1-score": 0.4440018892045356,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9871632637812257,
+    "recall": 0.7342459800086919,
+    "f1-score": 0.8385592697864261,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9932284840541721,
-    "recall": 0.9969304976978732,
-    "f1-score": 0.9950760477076267,
+    "precision": 0.995931415286254,
+    "recall": 0.7513703135277352,
+    "f1-score": 0.8565358660334916,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4166666666666667,
-    "recall": 0.24390243902439024,
-    "f1-score": 0.3076923076923077,
+    "precision": 0.023255813953488372,
+    "recall": 0.6585365853658537,
+    "f1-score": 0.04492512479201331,
     "support": 41.0
   },
-  "accuracy": 0.9902216427640157,
+  "accuracy": 0.7505432420686659,
   "macro avg": {
-    "precision": 0.7049475753604194,
-    "recall": 0.6204164683611317,
-    "f1-score": 0.6513841776999671,
+    "precision": 0.5095936146198712,
+    "recall": 0.7049534494467944,
+    "f1-score": 0.45073049541275245,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9880917968501548,
-    "recall": 0.9902216427640157,
-    "f1-score": 0.988952029163379,
+    "precision": 0.9872656830709903,
+    "recall": 0.7505432420686659,
+    "f1-score": 0.8493050880259079,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4547, 14], [31, 10]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.2035
-    - lnlrgdpcap: 0.1797
-    - lv2x_polyarchy: 0.1746
-    - t_claim: 0.1577
-    - groupsize: 0.1332
+    - lnltotpop: 0.2215
+    - lnlrgdpcap: 0.1905
+    - lv2x_polyarchy: 0.1726
+    - t_claim: 0.1469
+    - groupsize: 0.1300
 
 --------------------------------------------------
 
 --- GRIEVANCES Theory ---
-  Features used: ['t_claim', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.8051
-  AI-tuned AUC (Test):    0.8239
-  Improvement (AI - Human):   +0.0188 (AI Win!)
-  Best AI Params used: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7669
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7669, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7580, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7580, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.8051
+  RandSearch AUC (Test):       0.8369
+  AI-tuned (Delphi) AUC (Test):  0.8051
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0318
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -391,62 +473,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3421, 1140], [13, 28]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.996803254867771,
+    "recall": 0.752028064021048,
+    "f1-score": 0.8572856785803549,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.025839793281653745,
+    "recall": 0.7317073170731707,
+    "f1-score": 0.04991680532445923,
+    "support": 41.0
+  },
+  "accuracy": 0.7518470230334637,
+  "macro avg": {
+    "precision": 0.5113215240747123,
+    "recall": 0.7418676905471093,
+    "f1-score": 0.45360124195240703,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9881527763964475,
+    "recall": 0.7518470230334637,
+    "f1-score": 0.8500926920954588,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925828970331588,
-    "recall": 0.9975882481911862,
-    "f1-score": 0.9950792782941498,
+    "precision": 0.9962143273150844,
+    "recall": 0.7500548125411094,
+    "f1-score": 0.8557848655409631,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.3888888888888889,
-    "recall": 0.17073170731707318,
-    "f1-score": 0.23728813559322035,
+    "precision": 0.023972602739726026,
+    "recall": 0.6829268292682927,
+    "f1-score": 0.04631927212572374,
     "support": 41.0
   },
-  "accuracy": 0.9902216427640157,
+  "accuracy": 0.7494567579313341,
   "macro avg": {
-    "precision": 0.6907358929610239,
-    "recall": 0.5841599777541296,
-    "f1-score": 0.6161837069436851,
+    "precision": 0.5100934650274053,
+    "recall": 0.7164908209047011,
+    "f1-score": 0.4510520688333434,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9872044845312217,
-    "recall": 0.9902216427640157,
-    "f1-score": 0.9883279882353192,
+    "precision": 0.9875524605815795,
+    "recall": 0.7494567579313341,
+    "f1-score": 0.8485731990198799,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4550, 11], [34, 7]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.2366
-    - lnlrgdpcap: 0.2202
-    - t_claim: 0.1729
-    - groupsize: 0.1343
-    - numb_rel_grps: 0.1156
+    - lnltotpop: 0.2295
+    - lnlrgdpcap: 0.2091
+    - t_claim: 0.1655
+    - groupsize: 0.1481
+    - numb_rel_grps: 0.1205
 
 --------------------------------------------------
 
 --- POM GM Theory ---
-  Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7986
-  AI-tuned AUC (Test):    0.8289
-  Improvement (AI - Human):   +0.0302 (AI Win!)
-  Best AI Params used: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7609
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7609, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7587, Params: {'n_estimators': 1300, 'max_depth': 15, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7516, Params: {'n_estimators': 1100, 'max_depth': 25, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7986
+  RandSearch AUC (Test):       0.8354
+  AI-tuned (Delphi) AUC (Test):  0.7986
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0368
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -476,62 +579,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3504, 1057], [14, 27]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9967675580370261,
+    "recall": 0.7436965577724183,
+    "f1-score": 0.8518332496233049,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.025020850708924104,
+    "recall": 0.7317073170731707,
+    "f1-score": 0.04838709677419355,
+    "support": 41.0
+  },
+  "accuracy": 0.7435897435897436,
+  "macro avg": {
+    "precision": 0.5108942043729751,
+    "recall": 0.7377019374227944,
+    "f1-score": 0.4501101731987492,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9881101014962935,
+    "recall": 0.7435897435897435,
+    "f1-score": 0.8446752113210855,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9925845147219193,
-    "recall": 0.9978074983556238,
-    "f1-score": 0.9951891537284059,
+    "precision": 0.9960204661739624,
+    "recall": 0.7682525761894321,
+    "f1-score": 0.8674340883772744,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.4117647058823529,
-    "recall": 0.17073170731707318,
-    "f1-score": 0.2413793103448276,
+    "precision": 0.024907749077490774,
+    "recall": 0.6585365853658537,
+    "f1-score": 0.048,
     "support": 41.0
   },
-  "accuracy": 0.990438939591482,
+  "accuracy": 0.7672750977835724,
   "macro avg": {
-    "precision": 0.7021746103021361,
-    "recall": 0.5842696028363484,
-    "f1-score": 0.6182842320366168,
+    "precision": 0.5104641076257266,
+    "recall": 0.713394580777643,
+    "f1-score": 0.45771704418863723,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9874098923485117,
-    "recall": 0.990438939591482,
-    "f1-score": 0.9884733337417203,
+    "precision": 0.9873686579599349,
+    "recall": 0.7672750977835724,
+    "f1-score": 0.8601336108406669,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4551, 10], [34, 7]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.1899
-    - lnlrgdpcap: 0.1681
-    - lv2x_polyarchy: 0.1625
-    - t_claim: 0.1364
-    - groupsize: 0.1131
+    - lnltotpop: 0.2105
+    - lnlrgdpcap: 0.1825
+    - lv2x_polyarchy: 0.1650
+    - t_claim: 0.1332
+    - groupsize: 0.1105
 
 --------------------------------------------------
 
 --- POM RMM Theory ---
-  Features used: ['t_claim', 'lv2x_polyarchy', 'lfederal', 'coldwar', 'regaut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7806
-  AI-tuned AUC (Test):    0.8135
-  Improvement (AI - Human):   +0.0330 (AI Win!)
-  Best AI Params used: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7452
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7452, Params: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7389, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7373, Params: {'n_estimators': 1500, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7806
+  RandSearch AUC (Test):       0.8479
+  AI-tuned (Delphi) AUC (Test):  0.7806
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0673
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -561,62 +685,83 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3256, 1305], [13, 28]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9970743124634289,
+    "recall": 0.7472045604034203,
+    "f1-score": 0.8542423862639429,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.026182432432432432,
+    "recall": 0.7560975609756098,
+    "f1-score": 0.05061224489795919,
+    "support": 41.0
+  },
+  "accuracy": 0.747283789656671,
+  "macro avg": {
+    "precision": 0.5116283724479307,
+    "recall": 0.751651060689515,
+    "f1-score": 0.45242731558095106,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9884244717243437,
+    "recall": 0.747283789656671,
+    "f1-score": 0.8470827087767623,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9919495213228895,
-    "recall": 0.9995614996711247,
-    "f1-score": 0.9957409631975538,
+    "precision": 0.9960232486999082,
+    "recall": 0.7138785354089016,
+    "f1-score": 0.8316730523627075,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6666666666666666,
-    "recall": 0.0975609756097561,
-    "f1-score": 0.1702127659574468,
+    "precision": 0.021005251312828207,
+    "recall": 0.6829268292682927,
+    "f1-score": 0.040756914119359534,
     "support": 41.0
   },
-  "accuracy": 0.9915254237288136,
+  "accuracy": 0.7136027813993916,
   "macro avg": {
-    "precision": 0.8293080939947781,
-    "recall": 0.5485612376404404,
-    "f1-score": 0.5829768645775003,
+    "precision": 0.5085142500063682,
+    "recall": 0.6984026823385971,
+    "f1-score": 0.4362149832410335,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9890515210967041,
-    "recall": 0.9915254237288136,
-    "f1-score": 0.9883861922095389,
+    "precision": 0.9873366476801623,
+    "recall": 0.7136027813993916,
+    "f1-score": 0.8246266460897875,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4559, 2], [37, 4]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.1712
-    - lnlrgdpcap: 0.1549
-    - lv2x_polyarchy: 0.1544
-    - t_claim: 0.1344
-    - groupsize: 0.1154
+    - lnltotpop: 0.2015
+    - lnlrgdpcap: 0.1681
+    - lv2x_polyarchy: 0.1594
+    - t_claim: 0.1251
+    - groupsize: 0.1083
 
 --------------------------------------------------
 
 --- RMM GM Theory ---
-  Features used: ['t_claim', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7989
-  AI-tuned AUC (Test):    0.8373
-  Improvement (AI - Human):   +0.0383 (AI Win!)
-  Best AI Params used: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 0/10
-    Highest AI Validation AUC during search: 0.7656
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7656, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7638, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7638, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7989
+  RandSearch AUC (Test):       0.8698
+  AI-tuned (Delphi) AUC (Test):  0.7989
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0709
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -646,64 +791,85 @@ Just a note:
     "support": 4602.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[3264, 1297], [13, 28]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9972519923055785,
+    "recall": 0.795658846744135,
+    "f1-score": 0.8851219512195122,
+    "support": 4561.0
+  },
+  "1.0": {
+    "precision": 0.032191069574247146,
+    "recall": 0.7560975609756098,
+    "f1-score": 0.061752988047808766,
+    "support": 41.0
+  },
+  "accuracy": 0.7953063885267275,
+  "macro avg": {
+    "precision": 0.5147215309399128,
+    "recall": 0.7758782038598724,
+    "f1-score": 0.4734374696336605,
+    "support": 4602.0
+  },
+  "weighted avg": {
+    "precision": 0.9886541005559079,
+    "recall": 0.7953063885267274,
+    "f1-score": 0.8777864172147231,
+    "support": 4602.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9923780487804879,
-    "recall": 0.9991229993422495,
-    "f1-score": 0.9957391019337922,
+    "precision": 0.996032956972841,
+    "recall": 0.7156325367244025,
+    "f1-score": 0.8328655269201327,
     "support": 4561.0
   },
   "1.0": {
-    "precision": 0.6,
-    "recall": 0.14634146341463414,
-    "f1-score": 0.23529411764705882,
+    "precision": 0.021132075471698115,
+    "recall": 0.6829268292682927,
+    "f1-score": 0.040995607613469986,
     "support": 41.0
   },
-  "accuracy": 0.9915254237288136,
+  "accuracy": 0.7153411560191221,
   "macro avg": {
-    "precision": 0.7961890243902439,
-    "recall": 0.5727322313784418,
-    "f1-score": 0.6155166097904256,
+    "precision": 0.5085825162222696,
+    "recall": 0.6992796829963477,
+    "f1-score": 0.43693056726680135,
     "support": 4602.0
   },
   "weighted avg": {
-    "precision": 0.9888822860686235,
-    "recall": 0.9915254237288136,
-    "f1-score": 0.9889641683493169,
+    "precision": 0.987347399358424,
+    "recall": 0.7153411560191221,
+    "f1-score": 0.8258106232496475,
     "support": 4602.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[4557, 4], [35, 6]]
 
   Top 5 Important Features (AI Model):
-    - lnltotpop: 0.2028
-    - lnlrgdpcap: 0.1909
-    - t_claim: 0.1480
-    - groupsize: 0.1092
-    - mounterr: 0.1036
+    - lnltotpop: 0.1929
+    - lnlrgdpcap: 0.1779
+    - t_claim: 0.1384
+    - groupsize: 0.1234
+    - mounterr: 0.1131
 
 --------------------------------------------------
 
 ============================== ESCALATION STAGE BREAKDOWN ==============================
 
 --- BASE Theory ---
-  Features used: ['t_escal', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.6344
-  AI-tuned AUC (Test):    0.6922
-  Improvement (AI - Human):   +0.0578 (AI Win!)
-  Best AI Params used: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 10/10
-    Highest AI Validation AUC during search: 0.7697
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7697, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7645, Params: {'n_estimators': 1600, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7491, Params: {'n_estimators': 1800, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Features used: []
+  Human-tuned AUC (Test):      0.6344
+  RandSearch AUC (Test):       0.7095
+  AI-tuned (Delphi) AUC (Test):  0.6344
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0751
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -733,62 +899,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[643, 450], [8, 13]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9864661654135338,
+    "recall": 0.6001829826166514,
+    "f1-score": 0.7463026166097838,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.026726057906458798,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.05106382978723404,
+    "support": 21.0
+  },
+  "accuracy": 0.599640933572711,
+  "macro avg": {
+    "precision": 0.5065961116599963,
+    "recall": 0.5858057770226114,
+    "f1-score": 0.3986832231985089,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9683741167082837,
+    "recall": 0.599640933572711,
+    "f1-score": 0.7331966789766837,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9819819819819819,
-    "recall": 0.9972552607502287,
-    "f1-score": 0.9895596913300045,
+    "precision": 0.9877112135176651,
+    "recall": 0.5882891125343093,
+    "f1-score": 0.7373853211009175,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.25,
-    "recall": 0.047619047619047616,
-    "f1-score": 0.08,
+    "precision": 0.028077753779697623,
+    "recall": 0.6190476190476191,
+    "f1-score": 0.05371900826446281,
     "support": 21.0
   },
-  "accuracy": 0.9793536804308797,
+  "accuracy": 0.5888689407540395,
   "macro avg": {
-    "precision": 0.615990990990991,
-    "recall": 0.5224371541846382,
-    "f1-score": 0.5347798456650023,
+    "precision": 0.5078944836486814,
+    "recall": 0.6036683657909642,
+    "f1-score": 0.39555216468269017,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.968183398838695,
-    "recall": 0.9793536804308797,
-    "f1-score": 0.9724135930194749,
+    "precision": 0.9696211752281702,
+    "recall": 0.5888689407540395,
+    "f1-score": 0.7244975360294942,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1090, 3], [20, 1]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2839
-    - lnltotpop: 0.2230
-    - t_escal: 0.1872
-    - groupsize: 0.1464
-    - numb_rel_grps: 0.1094
+    - lnlrgdpcap: 0.3066
+    - lnltotpop: 0.2238
+    - t_escal: 0.1984
+    - groupsize: 0.1322
+    - numb_rel_grps: 0.0876
 
 --------------------------------------------------
 
 --- COMPLETE Theory ---
-  Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'lost_autonomy', 'downgr2_aut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7354
-  AI-tuned AUC (Test):    0.7805
-  Improvement (AI - Human):   +0.0452 (AI Win!)
-  Best AI Params used: {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 2/10
-    Highest AI Validation AUC during search: 0.7372
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7372, Params: {'n_estimators': 1200, 'max_depth': 25, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7358, Params: {'n_estimators': 1200, 'max_depth': 15, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7325, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7354
+  RandSearch AUC (Test):       0.7401
+  AI-tuned (Delphi) AUC (Test):  0.7354
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): -0.0047
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -818,62 +1005,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[717, 376], [7, 14]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9910846953937593,
+    "recall": 0.6102470265324794,
+    "f1-score": 0.7553793884484711,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.034013605442176874,
+    "recall": 0.7142857142857143,
+    "f1-score": 0.06493506493506493,
+    "support": 21.0
+  },
+  "accuracy": 0.6122082585278277,
+  "macro avg": {
+    "precision": 0.5125491504179681,
+    "recall": 0.6622663704090969,
+    "f1-score": 0.410157226691768,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9730429603049054,
+    "recall": 0.6122082585278277,
+    "f1-score": 0.7423638311829581,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.981149012567325,
-    "recall": 1.0,
-    "f1-score": 0.9904848210240145,
+    "precision": 0.9903314917127072,
+    "recall": 0.6559926806953339,
+    "f1-score": 0.7892129884424877,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1-score": 0.0,
+    "precision": 0.035897435897435895,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.0681265206812652,
     "support": 21.0
   },
-  "accuracy": 0.981149012567325,
+  "accuracy": 0.6561938958707361,
   "macro avg": {
-    "precision": 0.4905745062836625,
-    "recall": 0.5,
-    "f1-score": 0.49524241051200724,
+    "precision": 0.5131144638050715,
+    "recall": 0.6613296736810003,
+    "f1-score": 0.42866975456187645,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9626533848618368,
-    "recall": 0.981149012567325,
-    "f1-score": 0.9718132041106353,
+    "precision": 0.9723394673212163,
+    "recall": 0.6561938958707361,
+    "f1-score": 0.7756197965008489,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1093, 0], [21, 0]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.1988
-    - lv2x_polyarchy: 0.1691
-    - lnltotpop: 0.1370
-    - t_escal: 0.1162
-    - mounterr: 0.0939
+    - lnlrgdpcap: 0.1671
+    - lnltotpop: 0.1328
+    - lv2x_polyarchy: 0.1310
+    - t_escal: 0.1074
+    - groupsize: 0.1048
 
 --------------------------------------------------
 
 --- RESOURCE MOBILIZATION Theory ---
-  Features used: ['t_escal', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7187
-  AI-tuned AUC (Test):    0.7233
-  Improvement (AI - Human):   +0.0046 (AI Win!)
-  Best AI Params used: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 2/10
-    Highest AI Validation AUC during search: 0.7287
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7287, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7236, Params: {'n_estimators': 1200, 'max_depth': 18, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7178, Params: {'n_estimators': 1400, 'max_depth': 18, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7187
+  RandSearch AUC (Test):       0.6975
+  AI-tuned (Delphi) AUC (Test):  0.7187
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0212
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -903,62 +1111,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[739, 354], [6, 15]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9867060561299852,
+    "recall": 0.6111619396157365,
+    "f1-score": 0.7548022598870057,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.02745995423340961,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.05240174672489083,
+    "support": 21.0
+  },
+  "accuracy": 0.6104129263913824,
+  "macro avg": {
+    "precision": 0.5070830051816974,
+    "recall": 0.591295255522154,
+    "f1-score": 0.40360200330594825,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9686233199182903,
+    "recall": 0.6104129263913824,
+    "f1-score": 0.7415613166406821,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.981149012567325,
-    "recall": 1.0,
-    "f1-score": 0.9904848210240145,
+    "precision": 0.9919463087248322,
+    "recall": 0.67612076852699,
+    "f1-score": 0.8041349292709467,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1-score": 0.0,
+    "precision": 0.04065040650406504,
+    "recall": 0.7142857142857143,
+    "f1-score": 0.07692307692307693,
     "support": 21.0
   },
-  "accuracy": 0.981149012567325,
+  "accuracy": 0.6768402154398564,
   "macro avg": {
-    "precision": 0.4905745062836625,
-    "recall": 0.5,
-    "f1-score": 0.49524241051200724,
+    "precision": 0.5162983576144486,
+    "recall": 0.6952032414063521,
+    "f1-score": 0.4405290030970118,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9626533848618368,
-    "recall": 0.981149012567325,
-    "f1-score": 0.9718132041106353,
+    "precision": 0.9740134416273133,
+    "recall": 0.6768402154398565,
+    "f1-score": 0.7904262677814446,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1093, 0], [21, 0]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2630
-    - lnltotpop: 0.1900
-    - t_escal: 0.1632
-    - mounterr: 0.1201
-    - groupsize: 0.1110
+    - lnlrgdpcap: 0.2250
+    - lnltotpop: 0.1758
+    - t_escal: 0.1566
+    - groupsize: 0.1331
+    - mounterr: 0.1159
 
 --------------------------------------------------
 
 --- POLITICAL OPPORTUNITY Theory ---
-  Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7273
-  AI-tuned AUC (Test):    0.7130
-  Improvement (AI - Human):   -0.0143 (Human Win/Draw)
-  Best AI Params used: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 4, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 2/10
-    Highest AI Validation AUC during search: 0.7379
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7379, Params: {'n_estimators': 1100, 'max_depth': 15, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7353, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7233, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7273
+  RandSearch AUC (Test):       0.7146
+  AI-tuned (Delphi) AUC (Test):  0.7273
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0127
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -988,62 +1217,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[673, 420], [6, 15]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9864457831325302,
+    "recall": 0.5992680695333943,
+    "f1-score": 0.7455890722822994,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.02666666666666667,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.050955414012738856,
+    "support": 21.0
+  },
+  "accuracy": 0.5987432675044884,
+  "macro avg": {
+    "precision": 0.5065562248995984,
+    "recall": 0.5853483204809828,
+    "f1-score": 0.39827224314751913,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9683529990698881,
+    "recall": 0.5987432675044884,
+    "f1-score": 0.7324945419199469,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9819819819819819,
-    "recall": 0.9972552607502287,
-    "f1-score": 0.9895596913300045,
+    "precision": 0.9911634756995582,
+    "recall": 0.6157365050320219,
+    "f1-score": 0.7595936794582393,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.25,
-    "recall": 0.047619047619047616,
-    "f1-score": 0.08,
+    "precision": 0.034482758620689655,
+    "recall": 0.7142857142857143,
+    "f1-score": 0.06578947368421052,
     "support": 21.0
   },
-  "accuracy": 0.9793536804308797,
+  "accuracy": 0.6175942549371634,
   "macro avg": {
-    "precision": 0.615990990990991,
-    "recall": 0.5224371541846382,
-    "f1-score": 0.5347798456650023,
+    "precision": 0.512823117160124,
+    "recall": 0.6650111096588681,
+    "f1-score": 0.4126915765712249,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.968183398838695,
-    "recall": 0.9793536804308797,
-    "f1-score": 0.9724135930194749,
+    "precision": 0.9731290995248219,
+    "recall": 0.6175942549371634,
+    "f1-score": 0.746514785094456,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1090, 3], [20, 1]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2304
-    - lv2x_polyarchy: 0.1974
-    - lnltotpop: 0.1681
-    - t_escal: 0.1377
-    - groupsize: 0.1102
+    - lnlrgdpcap: 0.2015
+    - lnltotpop: 0.1737
+    - lv2x_polyarchy: 0.1582
+    - t_escal: 0.1343
+    - groupsize: 0.1298
 
 --------------------------------------------------
 
 --- GRIEVANCES Theory ---
-  Features used: ['t_escal', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7429
-  AI-tuned AUC (Test):    0.7313
-  Improvement (AI - Human):   -0.0116 (Human Win/Draw)
-  Best AI Params used: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 6/10
-    Highest AI Validation AUC during search: 0.7485
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7485, Params: {'n_estimators': 2000, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7471, Params: {'n_estimators': 2000, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      3. Val AUC: 0.7467, Params: {'n_estimators': 2200, 'max_depth': 30, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7429
+  RandSearch AUC (Test):       0.7099
+  AI-tuned (Delphi) AUC (Test):  0.7429
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0330
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -1073,62 +1323,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[722, 371], [7, 14]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9866863905325444,
+    "recall": 0.6102470265324794,
+    "f1-score": 0.7540983606557377,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.0273972602739726,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.05228758169934641,
+    "support": 21.0
+  },
+  "accuracy": 0.6095152603231598,
+  "macro avg": {
+    "precision": 0.5070418254032585,
+    "recall": 0.5908377989805254,
+    "f1-score": 0.40319297117754205,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9686028431937383,
+    "recall": 0.6095152603231598,
+    "f1-score": 0.7408685344815148,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.9820143884892086,
-    "recall": 0.9990850869167429,
-    "f1-score": 0.9904761904761905,
+    "precision": 0.99039780521262,
+    "recall": 0.6605672461116194,
+    "f1-score": 0.7925356750823271,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.5,
-    "recall": 0.047619047619047616,
-    "f1-score": 0.08695652173913043,
+    "precision": 0.03636363636363636,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.06896551724137931,
     "support": 21.0
   },
-  "accuracy": 0.981149012567325,
+  "accuracy": 0.6606822262118492,
   "macro avg": {
-    "precision": 0.7410071942446044,
-    "recall": 0.5233520672678953,
-    "f1-score": 0.5387163561076604,
+    "precision": 0.5133807207881281,
+    "recall": 0.663616956389143,
+    "f1-score": 0.43075059616185324,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.97292794130943,
-    "recall": 0.981149012567325,
-    "f1-score": 0.9734439525556535,
+    "precision": 0.9724133190853053,
+    "recall": 0.6606822262118492,
+    "f1-score": 0.7788956631302087,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1092, 1], [20, 1]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2702
-    - lnltotpop: 0.2065
-    - t_escal: 0.1732
-    - groupsize: 0.1384
-    - numb_rel_grps: 0.1003
+    - lnlrgdpcap: 0.2307
+    - lnltotpop: 0.1895
+    - t_escal: 0.1600
+    - groupsize: 0.1565
+    - numb_rel_grps: 0.1125
 
 --------------------------------------------------
 
 --- POM GM Theory ---
-  Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7468
-  AI-tuned AUC (Test):    0.7668
-  Improvement (AI - Human):   +0.0200 (AI Win!)
-  Best AI Params used: {'n_estimators': 1600, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'log2', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 4/10
-    Highest AI Validation AUC during search: 0.7759
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7759, Params: {'n_estimators': 1600, 'max_depth': 22, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7741, Params: {'n_estimators': 1500, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'log2', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7725, Params: {'n_estimators': 1800, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7468
+  RandSearch AUC (Test):       0.7089
+  AI-tuned (Delphi) AUC (Test):  0.7468
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0379
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -1158,62 +1429,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[706, 387], [6, 15]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9861111111111112,
+    "recall": 0.5846294602012809,
+    "f1-score": 0.7340608845491097,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.02575107296137339,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.049281314168377825,
+    "support": 21.0
+  },
+  "accuracy": 0.5843806104129264,
+  "macro avg": {
+    "precision": 0.5059310920362423,
+    "recall": 0.5780290158149262,
+    "f1-score": 0.3916710993587437,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9680073761011072,
+    "recall": 0.5843806104129264,
+    "f1-score": 0.7211521134737099,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.981998199819982,
-    "recall": 0.9981701738334858,
-    "f1-score": 0.9900181488203267,
+    "precision": 0.9915730337078652,
+    "recall": 0.645928636779506,
+    "f1-score": 0.7822714681440444,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.3333333333333333,
-    "recall": 0.047619047619047616,
-    "f1-score": 0.08333333333333333,
+    "precision": 0.03731343283582089,
+    "recall": 0.7142857142857143,
+    "f1-score": 0.07092198581560284,
     "support": 21.0
   },
-  "accuracy": 0.9802513464991023,
+  "accuracy": 0.6472172351885098,
   "macro avg": {
-    "precision": 0.6576657665766577,
-    "recall": 0.5228946107262668,
-    "f1-score": 0.53667574107683,
+    "precision": 0.514443233271843,
+    "recall": 0.6801071755326101,
+    "f1-score": 0.4265967269798236,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9697702265738244,
-    "recall": 0.9802513464991023,
-    "f1-score": 0.972926244758184,
+    "precision": 0.9735842979643168,
+    "recall": 0.6472172351885098,
+    "f1-score": 0.768861827992431,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1091, 2], [20, 1]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2088
-    - lv2x_polyarchy: 0.1835
-    - lnltotpop: 0.1562
-    - t_escal: 0.1329
-    - groupsize: 0.1048
+    - lnlrgdpcap: 0.1801
+    - lnltotpop: 0.1570
+    - lv2x_polyarchy: 0.1459
+    - groupsize: 0.1208
+    - t_escal: 0.1158
 
 --------------------------------------------------
 
 --- POM RMM Theory ---
-  Features used: ['t_escal', 'lv2x_polyarchy', 'lfederal', 'regaut', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7339
-  AI-tuned AUC (Test):    0.7695
-  Improvement (AI - Human):   +0.0356 (AI Win!)
-  Best AI Params used: {'n_estimators': 1100, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 1/10
-    Highest AI Validation AUC during search: 0.7377
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7377, Params: {'n_estimators': 1100, 'max_depth': 18, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      2. Val AUC: 0.7294, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 4, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
-      3. Val AUC: 0.7164, Params: {'n_estimators': 1150, 'max_depth': 19, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7339
+  RandSearch AUC (Test):       0.7203
+  AI-tuned (Delphi) AUC (Test):  0.7339
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0136
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -1243,62 +1535,83 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[706, 387], [4, 17]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.986404833836858,
+    "recall": 0.5974382433668801,
+    "f1-score": 0.7441595441595441,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.02654867256637168,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.0507399577167019,
+    "support": 21.0
+  },
+  "accuracy": 0.5969479353680431,
+  "macro avg": {
+    "precision": 0.5064767532016148,
+    "recall": 0.5844334073977258,
+    "f1-score": 0.397449750938123,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9683105974035722,
+    "recall": 0.5969479353680431,
+    "f1-score": 0.7310879002499393,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.981149012567325,
-    "recall": 1.0,
-    "f1-score": 0.9904848210240145,
+    "precision": 0.9943661971830986,
+    "recall": 0.645928636779506,
+    "f1-score": 0.7831392124237382,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1-score": 0.0,
+    "precision": 0.04207920792079208,
+    "recall": 0.8095238095238095,
+    "f1-score": 0.08,
     "support": 21.0
   },
-  "accuracy": 0.981149012567325,
+  "accuracy": 0.6490125673249552,
   "macro avg": {
-    "precision": 0.4905745062836625,
-    "recall": 0.5,
-    "f1-score": 0.49524241051200724,
+    "precision": 0.5182227025519454,
+    "recall": 0.7277262231516577,
+    "f1-score": 0.4315696062118691,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9626533848618368,
-    "recall": 0.981149012567325,
-    "f1-score": 0.9718132041106353,
+    "precision": 0.976414647116215,
+    "recall": 0.6490125673249552,
+    "f1-score": 0.7698843439669172,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1093, 0], [21, 0]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.1983
-    - lv2x_polyarchy: 0.1780
-    - lnltotpop: 0.1409
-    - t_escal: 0.1259
-    - mounterr: 0.0964
+    - lnlrgdpcap: 0.1774
+    - lv2x_polyarchy: 0.1396
+    - lnltotpop: 0.1387
+    - t_escal: 0.1141
+    - groupsize: 0.1113
 
 --------------------------------------------------
 
 --- RMM GM Theory ---
-  Features used: ['t_escal', 'lsepkin_adjregbase1', 'lgiantoilfield', 'mounterr', 'status_excl', 'downgr2_aut', 'lost_autonomy', 'coldwar', 'noncontiguous', 'lnlrgdpcap', 'lnltotpop', 'groupsize', 'numb_rel_grps']
-  Human-tuned AUC (Test): 0.7251
-  AI-tuned AUC (Test):    0.7985
-  Improvement (AI - Human):   +0.0734 (AI Win!)
-  Best AI Params used: {'n_estimators': 1450, 'max_depth': 28, 'min_samples_split': 3, 'min_samples_leaf': 2, 'bootstrap': True, 'random_state': 666, 'n_jobs': -1, 'oob_score': False, 'max_features': 'sqrt', 'class_weight': 'balanced_subsample'}
-  AI Optimization Journey:
-    Times AI's validation AUC beat human's test AUC: 8/10
-    Highest AI Validation AUC during search: 0.7619
-    Top 3 AI Suggested Parameters (by Validation AUC):
-      1. Val AUC: 0.7619, Params: {'n_estimators': 1450, 'max_depth': 28, 'min_samples_split': 3, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      2. Val AUC: 0.7587, Params: {'n_estimators': 1200, 'max_depth': 20, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
-      3. Val AUC: 0.7359, Params: {'n_estimators': 1300, 'max_depth': 30, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'bootstrap': True, 'class_weight': 'balanced_subsample'}
+  Features used: []
+  Human-tuned AUC (Test):      0.7251
+  RandSearch AUC (Test):       0.7105
+  AI-tuned (Delphi) AUC (Test):  0.7251
+  Improvement (AI - Human):      +0.0000
+  Improvement (AI - RandSearch): +0.0146
+  Best AI Params used: {}
+  No AI optimization history recorded.
 
   Human Model Report (Test Set):
 {
@@ -1328,48 +1641,73 @@ Just a note:
     "support": 1114.0
   }
 }
-  Human Model Confusion Matrix (Test Set):
-[[701, 392], [8, 13]]
+
+  Randomized Search Model Report (Test Set):
+{
+  "0.0": {
+    "precision": 0.9868613138686131,
+    "recall": 0.6184812442817932,
+    "f1-score": 0.7604049493813273,
+    "support": 1093.0
+  },
+  "1.0": {
+    "precision": 0.027972027972027972,
+    "recall": 0.5714285714285714,
+    "f1-score": 0.05333333333333334,
+    "support": 21.0
+  },
+  "accuracy": 0.6175942549371634,
+  "macro avg": {
+    "precision": 0.5074166709203205,
+    "recall": 0.5949549078551823,
+    "f1-score": 0.4068691413573303,
+    "support": 1114.0
+  },
+  "weighted avg": {
+    "precision": 0.9687853039908499,
+    "recall": 0.6175942549371634,
+    "f1-score": 0.7470759512332054,
+    "support": 1114.0
+  }
+}
 
   AI Model Report (Test Set):
 {
   "0.0": {
-    "precision": 0.981149012567325,
-    "recall": 1.0,
-    "f1-score": 0.9904848210240145,
+    "precision": 0.9887165021156559,
+    "recall": 0.6413540713632205,
+    "f1-score": 0.7780244173140954,
     "support": 1093.0
   },
   "1.0": {
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1-score": 0.0,
+    "precision": 0.03209876543209877,
+    "recall": 0.6190476190476191,
+    "f1-score": 0.06103286384976526,
     "support": 21.0
   },
-  "accuracy": 0.981149012567325,
+  "accuracy": 0.6409335727109515,
   "macro avg": {
-    "precision": 0.4905745062836625,
-    "recall": 0.5,
-    "f1-score": 0.49524241051200724,
+    "precision": 0.5104076337738773,
+    "recall": 0.6302008452054197,
+    "f1-score": 0.41952864058193035,
     "support": 1114.0
   },
   "weighted avg": {
-    "precision": 0.9626533848618368,
-    "recall": 0.981149012567325,
-    "f1-score": 0.9718132041106353,
+    "precision": 0.97068331318356,
+    "recall": 0.6409335727109515,
+    "f1-score": 0.7645084185504052,
     "support": 1114.0
   }
 }
-  AI Model Confusion Matrix (Test Set):
-[[1093, 0], [21, 0]]
 
   Top 5 Important Features (AI Model):
-    - lnlrgdpcap: 0.2426
-    - lnltotpop: 0.1727
-    - t_escal: 0.1486
-    - mounterr: 0.1140
-    - groupsize: 0.1086
+    - lnlrgdpcap: 0.1915
+    - lnltotpop: 0.1541
+    - t_escal: 0.1337
+    - groupsize: 0.1324
+    - mounterr: 0.1102
 
 --------------------------------------------------
 
 
-Report finished on: 2025-08-02 17:03:33
+Report finished on: 2025-08-09 14:13:45
